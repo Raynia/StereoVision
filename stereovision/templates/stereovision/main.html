@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>main</title>
+    <title>main</title>    
 </head>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'stereovision/style.css'%}">
 <body>
 
 {% if camera_list %}
