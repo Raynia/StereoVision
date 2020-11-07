@@ -6,14 +6,14 @@ from django.views import generic
 from .models import Camera, Userdata
 
 # Create your views here.
-def main(request):
+def main_k(request):
     camera_list = Camera.objects.all()
     userdata_list = Userdata.objects.all()
     context = {
         'camera_list': camera_list,
         'userdata_list': userdata_list,
     }
-    return render(request, 'stereovision/main.html', context)
+    return render(request, 'stereovision/main_k.html', context)
 
 def left(request):
     return HttpResponse("This is left camera page")
@@ -33,7 +33,7 @@ def userdata_update(request):
 
     try:        
         q = Userdata(left=user_left, right=user_right, distance=user_distance, user_width=user_width, user_height=user_height)
-    except():
+    except:
         return None
     else:
         q.save()
@@ -43,3 +43,6 @@ def userdata_delete(request):
     q = Userdata.objects.first()
     q.delete()
     return HttpResponseRedirect(reverse('stereovision:main'))
+
+def main(request):
+    return render(request, 'stereovision/main.html')

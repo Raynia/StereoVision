@@ -10,5 +10,6 @@ urlpatterns = [
     path('sshot/', views.sshot, name='sshot'),
     path('userdata_update/', views.userdata_update, name="userdata_update"),    
     path('userdata_delete/', views.userdata_delete, name="userdata_delete"),   
+    path('main_k/', views.main_k, name="main_k"), 
 
 ]
