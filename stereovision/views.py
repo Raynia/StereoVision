@@ -1,19 +1,24 @@
+from django.http.response import StreamingHttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.views import generic
 
-from .models import Camera, Userdata
+from .models import CameraInfo, Userdata
 
 # Create your views here.
-def main_k(request):
-    camera_list = Camera.objects.all()
+def test_temp(request):
+    camera_list = CameraInfo.objects.all()
     userdata_list = Userdata.objects.all()
     context = {
         'camera_list': camera_list,
         'userdata_list': userdata_list,
     }
-    return render(request, 'stereovision/main_k.html', context)
+    return render(request, 'stereovision/test_temp.html', context)
+
+def test_main(request):
+        return render(request, 'stereovision/test_main.html')
+   
 
 def left(request):
     return HttpResponse("This is left camera page")
@@ -46,3 +51,12 @@ def userdata_delete(request):
 
 def main(request):
     return render(request, 'stereovision/main.html')
+
+def gen(camera):
+    return None       
+
+def video_left(request):
+    return StreamingHttpResponse(request)
+    
+def video_right(request):
+    return StreamingHttpResponse(request)

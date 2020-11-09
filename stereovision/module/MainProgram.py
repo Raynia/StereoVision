@@ -1,9 +1,9 @@
 import cv2 as cv
 import numpy as np
-import PixelCalculator as pc
-import SelectBorder
-import StereoCamera
-import Frames
+from stereovision.camera import PixelCalculator as pc
+from stereovision.module import SelectBorder
+from stereovision.module import StereoCamera
+from stereovision.module import Frames
 from sys import maxsize
 
 class MainProgram:
