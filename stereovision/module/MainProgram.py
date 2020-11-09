@@ -3,7 +3,7 @@ import numpy as np
 from stereovision.camera import PixelCalculator as pc
 from stereovision.module import SelectBorder
 from stereovision.module import StereoCamera
-from stereovision.module import Frames
+from stereovision.camera import Frames
 from sys import maxsize
 
 class MainProgram:
