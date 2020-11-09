@@ -12,7 +12,8 @@ urlpatterns = [
     path('userdata_delete/', views.userdata_delete, name="userdata_delete"),   
     path('test/temp/', views.test_temp, name="test"), 
     path('test/main/', views.test_main, name="test"),
-
+    
     #Streaming Path
     path('video_left', views.video_left, name='video_left'),
-    path('video_right', views.video_right, name='video_right'),]
+    path('video_right', views.video_right, name='video_right'),
+]

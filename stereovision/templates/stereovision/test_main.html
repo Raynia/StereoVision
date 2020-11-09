@@ -7,7 +7,7 @@
 		<mata charset="UTF-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 		<meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-		<link rel="stylesheet" href="{% static 'stereovision/main.css' %}?after">
+		<link rel="stylesheet" href="{% static 'stereovision/test_main.css' %}?after">
 
 		<title>FOR TEST</title>
 		<script>
@@ -81,6 +81,8 @@
 					}
 				});
 			});
+
+
 		</script>
 	</head>
 	<body>
@@ -97,7 +99,7 @@
 				<img src="{% url 'stereovision:video_left' %}">
 			</div>
 			<div id="midRight_div" class="division">
-				<img src="{% url 'stereovision:video_left' %}">				
+				<img src="{% url 'stereovision:video_right' %}">				
 			</div>
 		</div>
 		<div id="right_div" class="division">
