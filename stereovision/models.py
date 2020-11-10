@@ -1,7 +1,6 @@
 from django.db import models
 
-#Camera 클래스
-class Camera(models.Model):
+class CameraInfo(models.Model):
     id = models.AutoField(primary_key=True)
     camera_name = models.CharField(max_length=200)
     frame = models.PositiveIntegerField(default=0)
