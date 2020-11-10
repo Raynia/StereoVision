@@ -3,7 +3,6 @@ import cv2 as cv
 class Camera:
     def __init__(self, cam):
         self.cam = cam
-
     #
     def Read(self):
         let, frame = self.cam.read()
