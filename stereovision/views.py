@@ -24,10 +24,7 @@ def video_left(request):
 
 #Streaming right-side video which player choose
 def video_right(request):
-    try:
-        return StreamingHttpResponse(gen(VideoCamera()), content_type="multipart/x-mixed-replace;boundary=frame")
-    except:  # This is bad! replace it with proper handling
-        pass
+    return None
 
 def border_selection(request):
     x1, y1 = request.POST[''], request.POST[''] # start point
