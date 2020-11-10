@@ -9,10 +9,13 @@ from .models import CameraInfo, Userdata
 
 # Stereovision View
 #########################################################################
-class VideoCamera(object):
+def main(request):
+    return render(request, 'stereovision/main.html')
+
+class VideoCamera:
     def __init__(self):
         self.video = cv.VideoCapture(1 + cv.CAP_DSHOW)
-        (self.grabbed, self.frame) = self.video.read()
+        (self.grabbed, self.frame) = self.video.read()        
         threading.Thread(target=self.update, args=()).start()
 
     def __del__(self):
@@ -22,31 +25,31 @@ class VideoCamera(object):
         (self.grabbed, self.frame) = self.video.read()
         image = self.frame
         jpeg = cv.imencode('.jpg', image)
-        return jpeg.tobytes()
+        return jpeg[1].tobytes()
 
     def update(self):
         while True:
             (self.grabbed, self.frame) = self.video.read()
-        
+
 def gen(camera):    
     while True:
         frame = camera.get_frame()
         yield(b'--frame\r\n'
               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')  
 
-def main(request):
-    return render(request, 'stereovision/main.html')
-
 #Streaming left-side video which player choose
 def video_left(request):
     try:
-        return StreamingHttpResponse(gen(VideoCamera()), content_type="multipart/x-mixed-replace;boundary=frame")
+        return StreamingHttpResponse(gen(VideoCamera()), content_type='multipart/x-mixed-replace;boundary=frame')
     except:  # This is bad! replace it with proper handling
         pass
 
 #Streaming right-side video which player choose
 def video_right(request):
-    return None
+    try:
+        return StreamingHttpResponse(gen(VideoCamera()), content_type='multipart/x-mixed-replace;boundary=frame')
+    except:  # This is bad! replace it with proper handling
+        pass
 
 def border_selection(request):
     x1, y1 = request.POST[''], request.POST[''] # start point
