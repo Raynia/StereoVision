@@ -1,14 +1,33 @@
+import threading
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, StreamingHttpResponse
 from django.urls import reverse
 from django.views import generic
-from .camera import VideoCamera
+import cv2 as cv
 
 from .models import CameraInfo, Userdata
 
 # Stereovision View
 #########################################################################
+class VideoCamera(object):
+    def __init__(self):
+        self.video = cv.VideoCapture(1 + cv.CAP_DSHOW)
+        (self.grabbed, self.frame) = self.video.read()
+        threading.Thread(target=self.update, args=()).start()
 
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        (self.grabbed, self.frame) = self.video.read()
+        image = self.frame
+        jpeg = cv.imencode('.jpg', image)
+        return jpeg.tobytes()
+
+    def update(self):
+        while True:
+            (self.grabbed, self.frame) = self.video.read()
+        
 def gen(camera):    
     while True:
         frame = camera.get_frame()
@@ -20,7 +39,10 @@ def main(request):
 
 #Streaming left-side video which player choose
 def video_left(request):
-    return StreamingHttpResponse(gen(VideoCamera()), content_type="multipart/x-mixed-replace;boundary=frame")
+    try:
+        return StreamingHttpResponse(gen(VideoCamera()), content_type="multipart/x-mixed-replace;boundary=frame")
+    except:  # This is bad! replace it with proper handling
+        pass
 
 #Streaming right-side video which player choose
 def video_right(request):
