@@ -13,21 +13,29 @@
 		<script>
 			var camera_selection = "none";
 			var mode = "camera_selection";
-			var cameraX_from=0, cameraX_to=0;
-			var cameraY_from=0, cameraY_to=0;
+			var selected_canvas = "none";
+			var cameraX_from=0, cameraX_to=0, cameraX_from_temp=0, cameraX_to_temp=0;
+			var cameraY_from=0, cameraY_to=0, cameraY_from_temp=0, cameraY_to_temp=0;
 			var area_selection_mode="off";
+			var ready_to_area_commit="off";
+
+			
 			$(function(){
 				//카메라 선택 모드 시작
 				$("#midLeft_div").on("click",function(){
 					//가운데 왼쪽 클릭
 					if(camera_selection=="left"&&mode=="camera_selection"){
 						camera_selection="none";
+						selected_canvas="none";
+						ready_to_area_commit="off";
 						$("#midLeft_div").css("width","800px").css("height","600px").css("position","absolute").css("left","0px").css("visibility","visible");
 						$("#midRight_div").css("width","800px").css("height","600px").css("position","absolute").css("left","800px").css("visibility","visible");
 						$("#midLeft_canvas").css("visibility","hidden");
+						//canvas_clear("temp_canvas1");
 						console.log(camera_selection);
 					}else if(camera_selection=="none"&&mode=="camera_selection"){
 						camera_selection="left";
+						selected_canvas="midLeft_canvas";
 						$("#midLeft_div").css("width","1600px").css("height","1200px").css("position","absolute").css("left","0px");
 						$("#midRight_div").css("visibility","hidden");
 						$("#midLeft_canvas").css("visibility","visible");
@@ -38,12 +46,16 @@
 				$("#midRight_div").on("click",function(){//가운데 오른쪽 클릭
 					if(camera_selection=="right"&&mode=="camera_selection"){
 						camera_selection="none";
+						selected_canvas="none";
+						ready_to_area_commit="off";
 						$("#midLeft_div").css("width","800px").css("height","600px").css("position","absolute").css("left","0px").css("visibility","visible");
 						$("#midRight_div").css("width","800px").css("height","600px").css("position","absolute").css("left","800px").css("visibility","visible");
 						$("#midRight_canvas").css("visibility","hidden");
+						//canvas_clear("temp_canvas2");
 						console.log(camera_selection);
 					}else if(camera_selection=="none"&&mode=="camera_selection"){
 						camera_selection="right";
+						selected_canvas="midRight_canvas"
 						$("#midRight_div").css("width","1600px").css("height","1200px").css("position","absolute").css("left","0px");
 						$("#midLeft_div").css("visibility","hidden");
 						$("#midRight_canvas").css("visibility","visible");
@@ -54,20 +66,22 @@
 
 				$("#midLeft_div").mousedown(function(event){//왼쪽카메라 범위지정 시작
 					if(camera_selection=="left"&&mode=="area_selection"){
-						cameraX_from=event.pageX;
-						cameraY_from=event.pageY-200;
+						cameraX_from_temp=event.pageX;
+						cameraY_from_temp=event.pageY;
 						area_selection_mode="on";
-						console.log("left_camera \nfrom 	"+cameraX_from+", "+cameraY_from);
+						canvas_clear("temp_canvas1");
+						console.log("left_camera \nfrom 	"+cameraX_from_temp+", "+cameraY_from_temp);
 					}
 				});
 				$("#midLeft_div").mouseup(function(event){
 					if(camera_selection=="left"&&mode=="area_selection"){
-						cameraX_to=event.pageX;
-						cameraY_to=event.pageY-200;
+						cameraX_to_temp=event.pageX;
+						cameraY_to_temp=event.pageY;
 						area_selection_mode="off";
-						coordinates_table.push(["midLeft_canvas",cameraX_from,cameraY_from,cameraX_to,cameraY_to]);
-						//draw("midLeft_canvas",cameraX_from,cameraY_from,cameraX_to,cameraY_to);
-						console.log("to 		"+cameraX_to+", "+cameraY_to);
+						ready_to_area_commit="on";
+						//coordinates_table.push(["midLeft_canvas",cameraX_from,cameraY_from,cameraX_to,cameraY_to]);
+						draw("temp_canvas1",cameraX_from_temp,cameraY_from_temp,cameraX_to_temp,cameraY_to_temp);
+						console.log("to 		"+cameraX_to_temp+", "+cameraY_to_temp);
 
 					}
 				});
@@ -80,20 +94,22 @@
 
 				$("#midRight_div").mousedown(function(event){//오른쪽카메라 범위지정 시작
 					if(camera_selection=="right"&&mode=="area_selection"){
-						cameraX_from=event.pageX-400;
-						cameraY_from=event.pageY-200;
+						cameraX_from_temp=event.pageX;
+						cameraY_from_temp=event.pageY;
 						area_selection_mode="on";
-						console.log("right_camera \nfrom 	"+cameraX_from+", "+cameraY_from);
+						canvas_clear("temp_canvas2");
+						console.log("right_camera \nfrom 	"+cameraX_from_temp+", "+cameraY_from_temp);
 					}
 				});
 				$("#midRight_div").mouseup(function(event){
 					if(camera_selection=="right"&&mode=="area_selection"){
-						cameraX_to=event.pageX-400;
-						cameraY_to=event.pageY-200;
+						cameraX_to_temp=event.pageX;
+						cameraY_to_temp=event.pageY;
 						area_selection_mode="off";
-						coordinates_table.push(["midRight_canvas",cameraX_from,cameraY_from,cameraX_to,cameraY_to]);
-						//draw("midRight_canvas",cameraX_from,cameraY_from,cameraX_to,cameraY_to);
-						console.log("to 		"+cameraX_to+", "+cameraY_to);
+						ready_to_area_commit="on";
+						//coordinates_table.push(["midRight_canvas",cameraX_from,cameraY_from,cameraX_to,cameraY_to]);
+						draw("temp_canvas2",cameraX_from_temp,cameraY_from_temp,cameraX_to_temp,cameraY_to_temp);
+						console.log("to 		"+cameraX_to_temp+", "+cameraY_to_temp);
 					}
 				});
 				$("#midRight_div").mouseleave(function(event){
@@ -124,9 +140,11 @@
 				$("#coordinates_table_clear_btn").on("click",function(){//전체 삭제 버튼
 					coordinates_table=[];
 					canvas_clear("midLeft_canvas");
+					canvas_clear("midRight_canvas");
 				});
 				$("#camera_setting_btn").on("click",function(){
-					if (confirm("카메라 설정 페이지로 이동합니다.")==true){    //확인
+					if (confirm("카메라 설정 페이지로 이동합니다.")==true){//확인
+						location.href="setting";
  					}else{   //취소
  				    	return false;
  					}
@@ -134,6 +152,17 @@
 				$("#table_check_btn").on("click",function(){//테이블 확인 버튼
 					for(var i=0;i<coordinates_table.length;i++){
 						console.log(coordinates_table[i][0]+" "+coordinates_table[i][1]+" "+coordinates_table[i][2]+" "+coordinates_table[i][3]+" "+coordinates_table[i][4]);
+					}
+				});
+				$("#area_commit_button").on("click",function(){
+					if(ready_to_area_commit=="off"){
+						alert("범위를 지정해야 합니다.");
+					}else{
+						coordinates_table.push([selected_canvas,cameraX_from_temp,cameraY_from_temp,cameraX_to_temp,cameraY_to_temp]);
+						canvas_clear("temp_canvas1");
+						canvas_clear("temp_canvas2");
+						draw_all();
+						ready_to_area_commit="off";
 					}
 				});
 
@@ -151,7 +180,7 @@
 					var canvas = document.getElementById(camera);
 					if (canvas.getContext){
 						var ctx = canvas.getContext('2d');
-						ctx.clearRect(0,0,1200,900);
+						ctx.clearRect(0,0,1600,1200);
 					}
 				}
 				function draw(camera, X_from, Y_from, X_to, Y_to){
@@ -159,12 +188,33 @@
 					if (canvas.getContext){
 	     				var ctx = canvas.getContext('2d');
 	     				ctx.lineWidth = 5;
-	     				ctx.strokeStyle = "green";
+	     				ctx.strokeStyle = "red";
 					    ctx.strokeRect(lower(X_from, X_to), lower(Y_from, Y_to), absolute(X_from, X_to), absolute(Y_from, Y_to));
 					}
 				}
-				function redraw(){
-
+				function draw_all(){
+					console.log("draw all");
+					var canvas1 = document.getElementById("midLeft_canvas");
+					var canvas2 = document.getElementById("midRight_canvas");
+					if(canvas1.getContext&&canvas2.getContext){
+						var ctx1 = canvas1.getContext('2d');
+						var ctx2 = canvas2.getContext('2d');
+	     				ctx1.lineWidth = 5;
+	     				ctx2.lineWidth = 5
+	     				ctx1.strokeStyle = "green";
+	     				ctx2.strokeStyle = "green";
+	     				for(var i=0;i<coordinates_table.length;i++){
+	     					console.log("draw");
+	     					if(coordinates_table[i][0]=="midLeft_canvas"){
+	     						console.log("drawing left");
+	     						ctx1.strokeRect(lower(coordinates_table[i][1], coordinates_table[i][3]), lower(coordinates_table[i][2], coordinates_table[i][4]), absolute(coordinates_table[i][1], coordinates_table[i][3]), absolute(coordinates_table[i][2], coordinates_table[i][4]));
+	     					}
+	     					if(coordinates_table[i][0]=="midRight_canvas"){
+	     						console.log("drawing right");
+	     						ctx2.strokeRect(lower(coordinates_table[i][1], coordinates_table[i][3]), lower(coordinates_table[i][2], coordinates_table[i][4]), absolute(coordinates_table[i][1], coordinates_table[i][3]), absolute(coordinates_table[i][2], coordinates_table[i][4]));
+	     					}
+	     				}
+	     			}
 				}
 				window.onkeydown = function(){
 					if(event.keyCode == 65){
@@ -176,11 +226,13 @@
 	</head>
 	<body>
 		<div id="top_div" class="division">
-			top
-			<div id="camera_setting_div" class="division">
+			<div id="camera_setting_div">
 				<button id="camera_setting_btn">camera setting</button>
 			</div>
-			<div id="mode_change_btn_div" class="division">
+			<div id="area_commit_div">
+				<button id="area_commit_button">area commit</button>
+			</div>
+			<div id="mode_change_btn_div">
 				<button id="mode_change_btn">area selection</button>
 			</div>
 
@@ -189,18 +241,18 @@
 			
 		</div>
 		<div id="mid_div" class="division">
-			mid
 			<div id="midLeft_div" class="division">
 				<img src="{% url 'stereovision:video_left' %}">
-				<canvas id="midLeft_canvas" width="1200" height="900"></canvas>
+				<canvas id="midLeft_canvas" width="1600" height="1200"></canvas>
+				<canvas id="temp_canvas1" width="1600" height="1200"></canvas>
 			</div>
 			<div id="midRight_div" class="division">
 				<img src="{% url 'stereovision:video_left' %}">	
-				<canvas id="midRight_canvas" width="1200" height="900"></canvas>
+				<canvas id="midRight_canvas" width="1600" height="1200"></canvas>
+				<canvas id="temp_canvas2" width="1600" height="1200"></canvas>
 			</div>
 		</div>
 		<div id="right_div" class="division">
-			right
 			<button id="coordinates_table_clear_btn">table clear</button>
 			<button id="table_check_btn">table check</button>
 		</div>

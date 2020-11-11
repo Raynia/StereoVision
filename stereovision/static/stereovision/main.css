@@ -14,19 +14,22 @@ body {
     left : 1600px;
 }
         #mode_change_btn_div{
-            width : 200px;
-            height : 25px;
             position : absolute;
             top : 150px;
             left : 0px;
             text-align : center;
         }
         #camera_setting_div{
-            width : 200px;
             position : absolute;
             top : 50px;
             left : 0px;
             text-align : center;   
+        }
+        #area_commit_btn{
+            position : absolute;
+            top : 100px;
+            left : 0px;
+            text-align : center;
         }
 #left_div{
     width : 0px;
@@ -52,12 +55,19 @@ body {
             background-color : #FFB6C1;
         }
         #midLeft_canvas{
-            width : 1200px;
-            height : 900px;
+            width : 1600px;
+            height : 1200px;
             position : absolute;
             top : 0px;
             left : 0px;
             visibility : hidden; 
+        }
+        #temp_canvas1{
+            width : 1600px;
+            height : 1200px;
+            position : absolute;
+            top : 0px;
+            left : 0px; 
         }
         #midRight_div{
             width : 800px;
@@ -68,16 +78,23 @@ body {
             background-color : #8A2BE2;
         }
         #midRight_canvas{
-            width : 1200px;
-            height : 900px;
+            width : 1600px;
+            height : 1200px;
             position : absolute;
             top : 0px;
             left : 0px;
             visibility : hidden; 
         }
+        #temp_canvas2{
+            width : 1600px;
+            height : 1200px;
+            position : absolute;
+            top : 0px;
+            left : 0px; 
+        }
 #right_div{
     width : 400px;
-    height : 900px;
+    height : 1000px;
     position : absolute;
     top : 200px;
     left : 1600px;
