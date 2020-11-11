@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, StreamingHttpResponse
 from django.urls import reverse
 from django.views import generic
+#from .camera import VideoCamera
 import cv2 as cv
 
 from .models import CameraInfo, Userdata
