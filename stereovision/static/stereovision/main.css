@@ -7,13 +7,27 @@ body {
 }
 
 #top_div{
-    width : 2100px;
+    width : 400px;
     height : 200px;
     position : absolute;
     top : 0px;
-    left : 0px;
+    left : 1600px;
 }
-
+        #mode_change_btn_div{
+            width : 200px;
+            height : 25px;
+            position : absolute;
+            top : 150px;
+            left : 0px;
+            text-align : center;
+        }
+        #camera_setting_div{
+            width : 200px;
+            position : absolute;
+            top : 50px;
+            left : 0px;
+            text-align : center;   
+        }
 #left_div{
     width : 0px;
     height : 0px;
@@ -23,10 +37,10 @@ body {
 }
 
 #mid_div{
-    width : 1700px;
-    height : 900px;
+    width : 1600px;
+    height : 1200px;
     position : absolute;
-    top : 200px;
+    top : 0px;
     left : 0px;
 }
         #midLeft_div{
@@ -35,29 +49,36 @@ body {
             position : absolute;
             top : 0px;
             left : 0px;
-            background-color : #FFB6C1
+            background-color : #FFB6C1;
         }
-
+        #midLeft_canvas{
+            width : 1200px;
+            height : 900px;
+            position : absolute;
+            top : 0px;
+            left : 0px;
+            visibility : hidden; 
+        }
         #midRight_div{
             width : 800px;
             height : 600px;
             position : absolute;
             top : 0px;
-            left : 900px;
-            background-color : #8A2BE2
+            left : 800px;
+            background-color : #8A2BE2;
+        }
+        #midRight_canvas{
+            width : 1200px;
+            height : 900px;
+            position : absolute;
+            top : 0px;
+            left : 0px;
+            visibility : hidden; 
         }
 #right_div{
     width : 400px;
     height : 900px;
     position : absolute;
     top : 200px;
-    left : 1700px;
-}
-
-#bottom_div{
-    width : 2100px;
-    height : 100px;
-    position : absolute;
-    top : 1100px;
-    left : 0px;
+    left : 1600px;
 }

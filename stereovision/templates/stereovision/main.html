@@ -1,4 +1,4 @@
- {% load static %}
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -9,7 +9,7 @@
 		<meta http-equiv="X-UA-Compatible" content="ie=edge"/>
 		<link rel="stylesheet" href="{% static 'stereovision/main.css' %}?after">
 
-		<title>FOR TEST</title>
+		<title>main page</title>
 		<script>
 			var camera_selection = "none";
 			var mode = "camera_selection";
@@ -17,53 +17,47 @@
 			var cameraY_from=0, cameraY_to=0;
 			var area_selection_mode="off";
 			$(function(){
-					//카메라 선택 모드 시작
-					$("#midLeft_div").on("click",function(){
-						//가운데 왼쪽 클릭
-						if(camera_selection=="left"&&mode=="camera_selection"){
-							camera_selection="none";
-							$("#midLeft_div").css("width","800px").css("height","600px").css("position","absolute").css("left","0px").css("visibility","visible");
-							$("#midRight_div").css("width","800px").css("height","600px").css("position","absolute").css("left","900px").css("visibility","visible");
-							console.log(camera_selection);
-						}else if(camera_selection=="none"&&mode=="camera_selection"){
-							camera_selection="left";
-							$("#midLeft_div").css("width","1200px").css("height","900px").css("position","absolute").css("left","0px");
-							$("#midRight_div").css("visibility","hidden");
-							console.log(camera_selection);
-						}
-					});
-					$("#midRight_div").on("click",function(){
-						//가운데 오른쪽 클릭
-						if(camera_selection=="right"&&mode=="camera_selection"){
-							camera_selection="none";
-							$("#midLeft_div").css("width","800px").css("height","600px").css("position","absolute").css("left","0px").css("visibility","visible");
-							$("#midRight_div").css("width","800px").css("height","600px").css("position","absolute").css("left","900px").css("visibility","visible");
-							console.log(camera_selection);
-						}else if(camera_selection=="none"&&mode=="camera_selection"){
-							camera_selection="right";
-							$("#midLeft_div").css("visibility","hidden");
-							$("#midRight_div").css("width","1200px").css("height","900px").css("position","absolute").css("left","500px");
-							console.log(camera_selection);
-						}
-					});
-					//카메라 선택 모드 끝
-				$("#mode_change_btn").on("click",function(){
-					if(mode=="camera_selection"){
-						mode="area_selection";
-						$(this).text("camera_selection");
-						console.log(mode);
-					}else if(mode=="area_selection"){
-						mode="camera_selection";
-						$(this).text("area_selection");
-						console.log(mode);
+				//카메라 선택 모드 시작
+				$("#midLeft_div").on("click",function(){
+					//가운데 왼쪽 클릭
+					if(camera_selection=="left"&&mode=="camera_selection"){
+						camera_selection="none";
+						$("#midLeft_div").css("width","800px").css("height","600px").css("position","absolute").css("left","0px").css("visibility","visible");
+						$("#midRight_div").css("width","800px").css("height","600px").css("position","absolute").css("left","800px").css("visibility","visible");
+						$("#midLeft_canvas").css("visibility","hidden");
+						console.log(camera_selection);
+					}else if(camera_selection=="none"&&mode=="camera_selection"){
+						camera_selection="left";
+						$("#midLeft_div").css("width","1600px").css("height","1200px").css("position","absolute").css("left","0px");
+						$("#midRight_div").css("visibility","hidden");
+						$("#midLeft_canvas").css("visibility","visible");
+						$("#midRight_canvas").css("visibility","hidden");
+						console.log(camera_selection);
 					}
 				});
+				$("#midRight_div").on("click",function(){//가운데 오른쪽 클릭
+					if(camera_selection=="right"&&mode=="camera_selection"){
+						camera_selection="none";
+						$("#midLeft_div").css("width","800px").css("height","600px").css("position","absolute").css("left","0px").css("visibility","visible");
+						$("#midRight_div").css("width","800px").css("height","600px").css("position","absolute").css("left","800px").css("visibility","visible");
+						$("#midRight_canvas").css("visibility","hidden");
+						console.log(camera_selection);
+					}else if(camera_selection=="none"&&mode=="camera_selection"){
+						camera_selection="right";
+						$("#midRight_div").css("width","1600px").css("height","1200px").css("position","absolute").css("left","0px");
+						$("#midLeft_div").css("visibility","hidden");
+						$("#midRight_canvas").css("visibility","visible");
+						$("#midLeft_canvas").css("visibility","visible");
+						console.log(camera_selection);
+					}
+				});//카메라 선택 모드 끝
+
 				$("#midLeft_div").mousedown(function(event){//왼쪽카메라 범위지정 시작
 					if(camera_selection=="left"&&mode=="area_selection"){
 						cameraX_from=event.pageX;
 						cameraY_from=event.pageY-200;
 						area_selection_mode="on";
-						console.log("from "+cameraX_from+", "+cameraY_from);
+						console.log("left_camera \nfrom 	"+cameraX_from+", "+cameraY_from);
 					}
 				});
 				$("#midLeft_div").mouseup(function(event){
@@ -71,7 +65,10 @@
 						cameraX_to=event.pageX;
 						cameraY_to=event.pageY-200;
 						area_selection_mode="off";
-						console.log("to "+cameraX_to+", "+cameraY_to);
+						coordinates_table.push(["midLeft_canvas",cameraX_from,cameraY_from,cameraX_to,cameraY_to]);
+						//draw("midLeft_canvas",cameraX_from,cameraY_from,cameraX_to,cameraY_to);
+						console.log("to 		"+cameraX_to+", "+cameraY_to);
+
 					}
 				});
 				$("#midLeft_div").mouseleave(function(){
@@ -79,14 +76,114 @@
 						area_selection_mode="off";
 						console.log("out of range");
 					}
+				});//왼쪽카메라 범위지정 끝
+
+				$("#midRight_div").mousedown(function(event){//오른쪽카메라 범위지정 시작
+					if(camera_selection=="right"&&mode=="area_selection"){
+						cameraX_from=event.pageX-400;
+						cameraY_from=event.pageY-200;
+						area_selection_mode="on";
+						console.log("right_camera \nfrom 	"+cameraX_from+", "+cameraY_from);
+					}
 				});
+				$("#midRight_div").mouseup(function(event){
+					if(camera_selection=="right"&&mode=="area_selection"){
+						cameraX_to=event.pageX-400;
+						cameraY_to=event.pageY-200;
+						area_selection_mode="off";
+						coordinates_table.push(["midRight_canvas",cameraX_from,cameraY_from,cameraX_to,cameraY_to]);
+						//draw("midRight_canvas",cameraX_from,cameraY_from,cameraX_to,cameraY_to);
+						console.log("to 		"+cameraX_to+", "+cameraY_to);
+					}
+				});
+				$("#midRight_div").mouseleave(function(event){
+					if(area_selection_mode=="on"){
+						area_selection_mode="off";
+						console.log("out of range");
+					}
+				});//오른쪽카메라 범위지정 끝
+
+				var coordinates_table = new Array();
+
+				//버튼
+				$("#mode_change_btn").on("click",function(){//모드 선택 버튼 시작
+					if(mode=="camera_selection"){
+						if(camera_selection=="none"){
+							alert("카메라를 선택해야 합니다.");
+						}else{
+							mode="area_selection";
+							$(this).text("camera_selection");
+							console.log(mode);
+						}
+					}else if(mode=="area_selection"){
+						mode="camera_selection";
+						$(this).text("area_selection");
+						console.log(mode);
+					}
+				});//모드 선택 버튼 끝
+				$("#coordinates_table_clear_btn").on("click",function(){//전체 삭제 버튼
+					coordinates_table=[];
+					canvas_clear("midLeft_canvas");
+				});
+				$("#camera_setting_btn").on("click",function(){
+					if (confirm("카메라 설정 페이지로 이동합니다.")==true){    //확인
+ 					}else{   //취소
+ 				    	return false;
+ 					}
+				});
+				$("#table_check_btn").on("click",function(){//테이블 확인 버튼
+					for(var i=0;i<coordinates_table.length;i++){
+						console.log(coordinates_table[i][0]+" "+coordinates_table[i][1]+" "+coordinates_table[i][2]+" "+coordinates_table[i][3]+" "+coordinates_table[i][4]);
+					}
+				});
+
+				//함수
+				function lower(a, b){
+					if(a<b) return a;
+					else return b;
+				}
+				function absolute(a, b){
+					var c=a-b;
+					if(c>0) return c;
+					else return c*(-1);
+				}
+				function canvas_clear(camera){
+					var canvas = document.getElementById(camera);
+					if (canvas.getContext){
+						var ctx = canvas.getContext('2d');
+						ctx.clearRect(0,0,1200,900);
+					}
+				}
+				function draw(camera, X_from, Y_from, X_to, Y_to){
+					var canvas = document.getElementById(camera);
+					if (canvas.getContext){
+	     				var ctx = canvas.getContext('2d');
+	     				ctx.lineWidth = 5;
+	     				ctx.strokeStyle = "green";
+					    ctx.strokeRect(lower(X_from, X_to), lower(Y_from, Y_to), absolute(X_from, X_to), absolute(Y_from, Y_to));
+					}
+				}
+				function redraw(){
+
+				}
+				window.onkeydown = function(){
+					if(event.keyCode == 65){
+						alert("이벤트 발생");
+					}
+				};
 			});
 		</script>
 	</head>
 	<body>
 		<div id="top_div" class="division">
 			top
-			<button id="mode_change_btn">area selection</button>
+			<div id="camera_setting_div" class="division">
+				<button id="camera_setting_btn">camera setting</button>
+			</div>
+			<div id="mode_change_btn_div" class="division">
+				<button id="mode_change_btn">area selection</button>
+			</div>
+
 		</div>
 		<div id="left_div" class="division">
 			
@@ -94,17 +191,21 @@
 		<div id="mid_div" class="division">
 			mid
 			<div id="midLeft_div" class="division">
+				<canvas id="midLeft_canvas" width="1200" height="900">
+					
+				</canvas>
 				
 			</div>
 			<div id="midRight_div" class="division">
-				
+				<canvas id="midRight_canvas" width="1200" height="900">
+					
+				</canvas>
 			</div>
 		</div>
 		<div id="right_div" class="division">
 			right
-		</div>
-		<div id="bottom_div" class="division">
-			bottom
+			<button id="coordinates_table_clear_btn">table clear</button>
+			<button id="table_check_btn">table check</button>
 		</div>
 	</body>
 </html>
