@@ -13,6 +13,9 @@ from .models import CameraInfo, Userdata
 def main(request):
     return render(request, 'stereovision/main.html')
 
+def setting(request):
+    return render(request, 'stereovision/setting.html')
+
 class VideoCamera:
     def __init__(self):
         self.video = cv.VideoCapture(1 + cv.CAP_DSHOW)
