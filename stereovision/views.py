@@ -113,7 +113,7 @@ def userdata_update(request):
         return None
     else:
         q.save()
-        return HttpResponseRedirect(reverse('stereovision:test_temp'))
+        return HttpResponseRedirect(reverse('stereovision:main'))
 
 def userdata_delete(request):
     q = Userdata.objects.first()

@@ -11,6 +11,13 @@
 	<title>setting page</title>
 	</head>
 	<body>
-		
+		해상도, 카메라 거리, 사용할 카메라,
+		<form action="{% url 'stereovision:userdata_update' %}" method="POST">
+			resolution
+			distance(mm)
+			left camera
+			right camera
+		<input type="submit" value="Setting Update">
+		</form>
 	</body>
 </html>

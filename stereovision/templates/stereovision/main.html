@@ -191,15 +191,12 @@
 		<div id="mid_div" class="division">
 			mid
 			<div id="midLeft_div" class="division">
-				<canvas id="midLeft_canvas" width="1200" height="900">
-					
-				</canvas>
-				
+				<img src="{% url 'stereovision:video_left' %}">
+				<canvas id="midLeft_canvas" width="1200" height="900"></canvas>
 			</div>
 			<div id="midRight_div" class="division">
-				<canvas id="midRight_canvas" width="1200" height="900">
-					
-				</canvas>
+				<img src="{% url 'stereovision:video_left' %}">	
+				<canvas id="midRight_canvas" width="1200" height="900"></canvas>
 			</div>
 		</div>
 		<div id="right_div" class="division">
