@@ -13,11 +13,28 @@
 	<body>
 		해상도, 카메라 거리, 사용할 카메라,
 		<form action="{% url 'stereovision:userdata_update' %}" method="POST">
-			resolution
-			distance(mm)
-			left camera
-			right camera
-		<input type="submit" value="Setting Update">
+			{% csrf_token %}
+			<label for="resolution">Right Camera: </label>
+    		<select name="resolution">
+        		<option value="1280">1280x960</option>
+        		<option value="2592">2592x1944</option>
+   			</select>
+   			<br>
+			<label for="distance">Distance(mm): </label>
+   			<input type="number" name="distance" id="distance" value="100">
+   			<br>
+			<label for="left">Left Camera: </label>
+    		<select name="left_camera">
+   				<option value="1"></option>
+    	
+    		</select>
+    		<br>
+    		<label for="right">Right Camera: </label>
+    		<select name="right_camera">
+        		<option value="1"></option>
+   			</select>
+	    	<br>
+			<input type="submit" value="Setting Update">
 		</form>
 	</body>
 </html>
