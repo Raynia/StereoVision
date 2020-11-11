@@ -101,19 +101,7 @@ def sshot(request):
     return HttpResponse("This is screenshot page")
 
 def userdata_update(request):    
-    user_left = request.POST['left']
-    user_right = request.POST['right']
-    user_distance = request.POST['distance']
-    user_width = request.POST['width']
-    user_height = request.POST['height']
-
-    try:        
-        q = Userdata(left=user_left, right=user_right, distance=user_distance, user_width=user_width, user_height=user_height)
-    except:
-        return None
-    else:
-        q.save()
-        return HttpResponseRedirect(reverse('stereovision:main'))
+    return HttpResponseRedirect(reverse('stereovision:main'))
 
 def userdata_delete(request):
     q = Userdata.objects.first()
