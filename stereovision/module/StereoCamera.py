@@ -1,6 +1,6 @@
 import cv2 as cv
 import numpy as np
-import Camera
+from stereovision.module import Camera
 
 class StereoCamera:
     def __init__(self):

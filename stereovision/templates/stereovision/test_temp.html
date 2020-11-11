@@ -13,8 +13,8 @@
 {% if camera_list %}
     <h1> Camera List </h1>  
     <ul>
-    {% for camera in camera_list %}
-        <li> {{camera.id}}: {{camera.camera_name}} </li>
+    {% for camerainfo in camera_list %}
+        <li> {{camerainfo.id}}: {{camerainfo.camera_name}} </li>
     {% endfor %}
     </ul>
 {% else %}
@@ -98,6 +98,7 @@
     <h2> Cannot find userdata </h2>
 {% endif %}
 
+<img src="{% url 'stereovision:video_left' %}">
 
 </body>
 </html>

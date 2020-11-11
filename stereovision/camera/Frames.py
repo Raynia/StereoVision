@@ -1,7 +1,7 @@
 import cv2 as cv
 import numpy as np
-import ImageProcess
-import PixelCalculator as pc
+from stereovision.camera import ImageProcess
+from stereovision.camera import PixelCalculator as pc
 
 class Frames:
     def __init__(self):
