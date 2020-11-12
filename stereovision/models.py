@@ -1,28 +1,32 @@
 from django.db import models
 
 class CameraInfo(models.Model):
-    id = models.AutoField(primary_key=True)
-    camera_name = models.CharField(max_length=200)
-    frame = models.PositiveIntegerField(default=0)
-    resolution_width = models.PositiveIntegerField(default=0)
-    resolution_height = models.PositiveIntegerField(default=0)
+    camera_id = models.IntegerField(null=False)
+    camera_name = models.CharField(max_length=200, null=False)
+
     def __str__(self):
-        _id = str(self.id)
+        _id = str(self.camera_id)
         _output = _id + ": " + self.camera_name
         return _output
 
 class Userdata(models.Model):
-    id = models.AutoField(primary_key=True)
-    left = models.IntegerField(default=0)
-    right = models.IntegerField(default=1)
-    distance = models.IntegerField(default=100)
-    user_width = models.PositiveIntegerField(default=640)
-    user_height = models.PositiveIntegerField(default=480)
+    user_left_camera = models.IntegerField(default=0)
+    user_right_camera = models.IntegerField(default=1)
+    user_distance = models.IntegerField(null=False, default=100)
+    user_width = models.PositiveIntegerField(null=False, default=1280)
+    user_height = models.PositiveIntegerField(null=False, default=960)
+
     def __str__(self):
-        _id = str(self.id)
-        _left = "left: " + str(self.left)
-        _right = "right: " + str(self.right)
-        _distance = "distance: " + str(self.distance)
+        _left = "left: " + str(self.user_left_camera)
+        _right = "right: " + str(self.user_left_camera)
+        _distance = "distance: " + str(self.user_distance)
         _resolution = "resolution: " + str(self.user_width) + "x" + str(self.user_height)
-        _output = _id + ": (" + _left + " " + _right + " " + _distance + " " + _resolution + ")"
+        _output = "(" + _left + " " + _right + " " + _distance + " " + _resolution + ")"
         return _output
+
+class TargetImage(models.Model):
+    target_image = models.BinaryField(null=False)
+    target_point_x1 = models.IntegerField(null=None)
+    target_point_y1 = models.IntegerField(null=None)
+    target_point_x2 = models.IntegerField(null=None)
+    target_point_y2 = models.IntegerField(null=None)

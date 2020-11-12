@@ -4,15 +4,15 @@ from . import views
 app_name = 'stereovision'
 
 urlpatterns = [
-    path('', views.main, name='main'),    
+    path('', views.init, name='init'),
+    path('main/', views.main, name='main'),   
     path('left/', views.left, name='left'),    
     path('right/', views.right, name='right'),    
     path('sshot/', views.sshot, name='sshot'),
     path('userdata_update/', views.userdata_update, name="userdata_update"),    
-    path('userdata_delete/', views.userdata_delete, name="userdata_delete"),   
-    path('test/temp/', views.test_temp, name="test"), 
-    path('test/main/', views.test_main, name="test"),
+    path('userdata_delete/', views.userdata_delete, name="userdata_delete"),  
     path('setting/', views.setting, name="setting"),
+    path('main/setting/', views.setting, name="setting"), #only use javascript location.href
 
     #Streaming Path
     path('video_left', views.video_left, name='video_left'),
