@@ -6,14 +6,14 @@ from django.views import generic
 from .camera import StereoCamera as sc
 import cv2 as cv
 
-from .models import CameraInfo, TargetImage, Userdata, CameraList
+from .models import CameraInfo, TargetImage, Userdata, CameraList, PreviewCamera
 
 stereoCamera = sc.StereoCamera()
 
 # Stereovision View
 #########################################################################
 def init(request):
-    init_list = [CameraInfo.objects.all(), Userdata.objects.all(), TargetImage.objects.all(), CameraList.objects.all()]
+    init_list = [CameraInfo.objects.all(), Userdata.objects.all(), TargetImage.objects.all(), CameraList.objects.all(), PreviewCamera.objects.all()]
 
     #DB 초기화
     for i in init_list:
@@ -27,10 +27,16 @@ def init(request):
     for idx, cam in enumerate(stereoCamera.cam_list):
         q = CameraList(camera_index = idx)
         q.save()
-
+    
+    if len(stereoCamera.cam_list) >= 2:
+        q = PreviewCamera(camera_left = 0, camera_right = 1)
+        q.save()
+    stereoCamera.pre_flag = True
     camera_list = CameraList.objects.all()
+    camera_preview_list = PreviewCamera.objects.all()
     contents = {
         'list' : camera_list,
+        'preview' : camera_preview_list,
     }
         
     # stereoCamera.ReleaseOtherCamera(0,1)
@@ -39,6 +45,21 @@ def init(request):
     # return HttpResponseRedirect(reverse('stereovision:setting')) 
 
 def main(request):
+    CameraList.objects.all().delete()
+    p = PreviewCamera.objects.all()
+    for cam in p:
+        if cam.camera_left >= 2:
+            if cam.camera_right == 0:
+                cam.camera_left = 1
+            else:
+                cam.camera_left = 0
+        if cam.camera_right >= 2:
+            if cam.camera_left == 0:
+                cam.camera_right = 1
+            else:
+                cam.camera_right = 0
+        cam.save()
+
     u = Userdata.objects.all()
     if u.exists():
         userdata_list = Userdata.objects.first()    
@@ -53,37 +74,79 @@ def main(request):
     return render(request, 'stereovision/main.html', contents)
 
 def setting(request):
+    stereoCamera.pre_flag = True
     camera_list = CameraList.objects.all()
-    camera_list.delete()
     for idx, cam in enumerate(stereoCamera.cam_list):
         q = CameraList(camera_index = idx)
         q.save()
     
-    #camera_list = CameraList.objects.all()
+    camera_list = CameraList.objects.all()
+    camera_preview_list = PreviewCamera.objects.all()
     contents = {
         'list' : camera_list,
+        'preview' : camera_preview_list,
     }
     return render(request, 'stereovision/setting.html', contents)
 
-def gen(lr):
+def genLR(lr):
     while True:
         frame = stereoCamera.GetLRFrame(lr)
+        yield(b'--frame\r\n'
+              b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+
+def gen(idx):
+    while True:
+        frame = stereoCamera.GetFrame(idx)
         yield(b'--frame\r\n'
               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')  
 
 #Streaming left-side video which player choose
 def video_left(request):
     try:
-        return StreamingHttpResponse(gen(0), content_type='multipart/x-mixed-replace;boundary=frame')
+        return StreamingHttpResponse(genLR(0), content_type='multipart/x-mixed-replace;boundary=frame')
+    except:  # This is bad! replace it with proper handling
+        pass
+
+def video_right(request):
+    try:
+        return StreamingHttpResponse(genLR(1), content_type='multipart/x-mixed-replace;boundary=frame')
     except:  # This is bad! replace it with proper handling
         pass
 
 #Streaming right-side video which player choose
-def video_right(request):
+def pre_video_left(request):
     try:
-        return StreamingHttpResponse(gen(1), content_type='multipart/x-mixed-replace;boundary=frame')
+        pre = PreviewCamera.objects.first()
+        return StreamingHttpResponse(gen(pre.camera_left), content_type='multipart/x-mixed-replace;boundary=frame')
     except:  # This is bad! replace it with proper handling
         pass
+
+def pre_video_right(request):
+    try:
+        pre = PreviewCamera.objects.first()
+        return StreamingHttpResponse(gen(pre.camera_right), content_type='multipart/x-mixed-replace;boundary=frame')
+    except:  # This is bad! replace it with proper handling
+        pass
+
+
+def camera_preview(request):
+    left_camera = request.POST['left_camera']
+    right_camera = request.POST['right_camera']
+
+    camera_preview_list = PreviewCamera.objects.all()
+    camera_preview_list.delete()
+
+    q = PreviewCamera(camera_left = left_camera, camera_right = right_camera)
+    q.save()
+
+    camera_list = CameraList.objects.all()
+    camera_preview_list = PreviewCamera.objects.all()
+    contents = {
+        'list' : camera_list,
+        'preview' : camera_preview_list,
+    }
+
+    return render(request, 'stereovision/setting.html', contents)
 
 def userdata_update(request): 
     left_camera = request.POST['left_camera']
@@ -91,6 +154,8 @@ def userdata_update(request):
     width = request.POST['resolution']
     height = int(width) // 4 * 3
     distance = request.POST['distance']
+
+    stereoCamera.pre_flag = False
 
     q = Userdata.objects.all()
     if q.exists():

@@ -9,6 +9,7 @@ urlpatterns = [
     path('left/', views.left, name='left'),    
     path('right/', views.right, name='right'),    
     path('sshot/', views.sshot, name='sshot'),
+    path('camera_preview/', views.camera_preview, name="camera_preview"), 
     path('userdata_update/', views.userdata_update, name="userdata_update"),    
     path('userdata_delete/', views.userdata_delete, name="userdata_delete"),  
     path('setting/', views.setting, name="setting"),
@@ -17,4 +18,7 @@ urlpatterns = [
     #Streaming Path
     path('video_left', views.video_left, name='video_left'),
     path('video_right', views.video_right, name='video_right'),
+
+    path('pre_video_left', views.pre_video_left, name='pre_video_left'),
+    path('pre_video_right', views.pre_video_right, name='pre_video_right'),
 ]

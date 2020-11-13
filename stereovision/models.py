@@ -33,3 +33,7 @@ class TargetImage(models.Model):
 
 class CameraList(models.Model):
     camera_index = models.PositiveIntegerField(null=False)
+
+class PreviewCamera(models.Model):
+    camera_left = models.PositiveIntegerField(null=False)
+    camera_right = models.PositiveIntegerField(null=False)

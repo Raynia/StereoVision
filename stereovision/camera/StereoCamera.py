@@ -5,20 +5,24 @@ from stereovision.module import Camera
 
 class StereoCamera:
     def __init__(self):
-        self.flag = False
+        self.flag, self.pre_flag = False, False
         self.cam_list = []
+        self.pre_frame = []
         self.left_cam, self.right_cam = None, None
         self.left_frame, self.right_frame = None, None
         self.distance_between_cameras = None
         self.camera_setting_values = {}
         self.capture = threading.Thread(target=self.CamsRead, args=())
+        #self.preCapture = threading.Thread(target=self.CamsPreview, args=())
         self.capture.setDaemon(True)
+        #self.preCapture.setDaemon(True)
         self.InitCamList()
 
         print(self.cam_list)
 
     def __del__(self):
         self.flag = False
+        self.pre_flag = False
         self.ReleaseAll()
 
 
@@ -46,6 +50,13 @@ class StereoCamera:
                 self.left_frame = np.zeros((500,500,3), dtype= np.uint8)
                 self.right_frame = self.left_frame.copy()
 
+    # #
+    # def CamsPreview(self):
+    #     while self.pre_flag:
+    #         self.pre_frame.clear()
+    #         for cam in self.cam_list:
+    #             self.pre_frame.append(cam.Read())
+
     #왼쪽과 오른쪽 웹캠 이외의 카메라를 종료
     def ReleaseOtherCamera(self, left_index, right_index):
         self.left_cam, self.right_cam = self.cam_list[left_index], self.cam_list[right_index]
@@ -57,6 +68,7 @@ class StereoCamera:
         if not self.flag:
             self.flag = True
             self.capture.start()
+        self.pre_flag = False
 
     #모든 웹캠들을 종료
     def ReleaseAll(self):
