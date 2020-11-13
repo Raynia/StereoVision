@@ -6,23 +6,37 @@ from django.views import generic
 from .camera import StereoCamera as sc
 import cv2 as cv
 
-from .models import CameraInfo, TargetImage, Userdata
+from .models import CameraInfo, TargetImage, Userdata, CameraList
 
 stereoCamera = sc.StereoCamera()
 
 # Stereovision View
 #########################################################################
 def init(request):
-    init_list = [CameraInfo.objects.all(), Userdata.objects.all(), TargetImage.objects.all()]
+    init_list = [CameraInfo.objects.all(), Userdata.objects.all(), TargetImage.objects.all(), CameraList.objects.all()]
 
     #DB 초기화
     for i in init_list:
         if i.exists():
             i.delete()
-        
-    stereoCamera.ReleaseOtherCamera(0,1)
 
-    return HttpResponseRedirect(reverse('stereovision:setting')) 
+    # camera_list = CameraList.objects.all()
+    # if camera_list.exists():
+    #     camera_list.delete()
+        
+    for idx, cam in enumerate(stereoCamera.cam_list):
+        q = CameraList(camera_index = idx)
+        q.save()
+
+    camera_list = CameraList.objects.all()
+    contents = {
+        'list' : camera_list,
+    }
+        
+    # stereoCamera.ReleaseOtherCamera(0,1)
+
+    return render(request, 'stereovision/setting.html', contents)
+    # return HttpResponseRedirect(reverse('stereovision:setting')) 
 
 def main(request):
     u = Userdata.objects.all()
@@ -33,14 +47,27 @@ def main(request):
     contents = {
         'userdata_list': userdata_list,
     }
+
+    stereoCamera.ReleaseOtherCamera(userdata_list.user_left_camera, userdata_list.user_right_camera)
+
     return render(request, 'stereovision/main.html', contents)
 
 def setting(request):
-    return render(request, 'stereovision/setting.html')
+    camera_list = CameraList.objects.all()
+    camera_list.delete()
+    for idx, cam in enumerate(stereoCamera.cam_list):
+        q = CameraList(camera_index = idx)
+        q.save()
+    
+    #camera_list = CameraList.objects.all()
+    contents = {
+        'list' : camera_list,
+    }
+    return render(request, 'stereovision/setting.html', contents)
 
 def gen(lr):
     while True:
-        frame = stereoCamera.GetFrame(lr)
+        frame = stereoCamera.GetLRFrame(lr)
         yield(b'--frame\r\n'
               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')  
 
@@ -62,7 +89,7 @@ def userdata_update(request):
     left_camera = request.POST['left_camera']
     right_camera = request.POST['right_camera']
     width = request.POST['resolution']
-    height = int(width) / 4 * 3
+    height = int(width) // 4 * 3
     distance = request.POST['distance']
 
     q = Userdata.objects.all()

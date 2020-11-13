@@ -25,13 +25,17 @@
    			<br>
 			<label for="left">Left Camera: </label>
     		<select name="left_camera">
-   				<option value="1"></option>
+				{% for cam in list %}
+				   <option value="{{cam.camera_index}}">{{cam}}</option>
+				{% endfor %}
     	
     		</select>
     		<br>
     		<label for="right">Right Camera: </label>
     		<select name="right_camera">
-        		<option value="1"></option>
+        		{% for cam in list %}
+				   <option value="{{cam.camera_index}}">{{cam}}</option>
+				{% endfor %}
    			</select>
 	    	<br>
 			<input type="submit" value="Setting Update">

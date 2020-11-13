@@ -30,3 +30,6 @@ class TargetImage(models.Model):
     target_point_y1 = models.IntegerField(null=None)
     target_point_x2 = models.IntegerField(null=None)
     target_point_y2 = models.IntegerField(null=None)
+
+class CameraList(models.Model):
+    camera_index = models.PositiveIntegerField(null=False)

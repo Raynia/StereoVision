@@ -35,7 +35,6 @@ class StereoCamera:
             else:
                 break
 
-        
 
     #두 웹캠으로 촬영한 프레임을 반환
     def CamsRead(self):
@@ -55,8 +54,9 @@ class StereoCamera:
             if cam not in cams:
                 cam.Release()
                 self.cam_list.remove(cam)
-        self.flag = True
-        self.capture.start()
+        if not self.flag:
+            self.flag = True
+            self.capture.start()
 
     #모든 웹캠들을 종료
     def ReleaseAll(self):
@@ -74,8 +74,12 @@ class StereoCamera:
             self.left_cam.Setting(key, value)
             self.right_cam.Setting(key, value)
 
+    def GetFrame(self, index):
+        frame = self.cam_list[index].Read()
+        image = cv.imencode('.jpg', frame)
+        return image[1].tobytes()
     
-    def GetFrame(self, lr):
+    def GetLRFrame(self, lr):
         frame = self.left_frame if lr == 0 else self.right_frame
         image = cv.imencode('.jpg', frame)
         return image[1].tobytes()
