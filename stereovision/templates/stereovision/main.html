@@ -79,8 +79,7 @@
 						cameraY_to_temp=event.pageY;
 						area_selection_mode="off";
 						ready_to_area_commit="on";
-						//coordinates_table.push(["midLeft_canvas",cameraX_from,cameraY_from,cameraX_to,cameraY_to]);
-						draw("temp_canvas1",cameraX_from_temp,cameraY_from_temp,cameraX_to_temp,cameraY_to_temp);
+						draw("temp_canvas1",cameraX_from_temp,cameraY_from_temp,cameraX_to_temp,cameraY_to_temp,"red");
 						console.log("to 		"+cameraX_to_temp+", "+cameraY_to_temp);
 
 					}
@@ -107,8 +106,7 @@
 						cameraY_to_temp=event.pageY;
 						area_selection_mode="off";
 						ready_to_area_commit="on";
-						//coordinates_table.push(["midRight_canvas",cameraX_from,cameraY_from,cameraX_to,cameraY_to]);
-						draw("temp_canvas2",cameraX_from_temp,cameraY_from_temp,cameraX_to_temp,cameraY_to_temp);
+						draw("temp_canvas2",cameraX_from_temp,cameraY_from_temp,cameraX_to_temp,cameraY_to_temp,"red");
 						console.log("to 		"+cameraX_to_temp+", "+cameraY_to_temp);
 					}
 				});
@@ -183,38 +181,21 @@
 						ctx.clearRect(0,0,1600,1200);
 					}
 				}
-				function draw(camera, X_from, Y_from, X_to, Y_to){
+				function draw(camera, X_from, Y_from, X_to, Y_to, color){
 					var canvas = document.getElementById(camera);
 					if (canvas.getContext){
 	     				var ctx = canvas.getContext('2d');
 	     				ctx.lineWidth = 5;
-	     				ctx.strokeStyle = "red";
+	     				ctx.strokeStyle = color;
 					    ctx.strokeRect(lower(X_from, X_to), lower(Y_from, Y_to), absolute(X_from, X_to), absolute(Y_from, Y_to));
 					}
 				}
 				function draw_all(){
-					console.log("draw all");
-					var canvas1 = document.getElementById("midLeft_canvas");
-					var canvas2 = document.getElementById("midRight_canvas");
-					if(canvas1.getContext&&canvas2.getContext){
-						var ctx1 = canvas1.getContext('2d');
-						var ctx2 = canvas2.getContext('2d');
-	     				ctx1.lineWidth = 5;
-	     				ctx2.lineWidth = 5
-	     				ctx1.strokeStyle = "green";
-	     				ctx2.strokeStyle = "green";
-	     				for(var i=0;i<coordinates_table.length;i++){
-	     					console.log("draw");
-	     					if(coordinates_table[i][0]=="midLeft_canvas"){
-	     						console.log("drawing left");
-	     						ctx1.strokeRect(lower(coordinates_table[i][1], coordinates_table[i][3]), lower(coordinates_table[i][2], coordinates_table[i][4]), absolute(coordinates_table[i][1], coordinates_table[i][3]), absolute(coordinates_table[i][2], coordinates_table[i][4]));
-	     					}
-	     					if(coordinates_table[i][0]=="midRight_canvas"){
-	     						console.log("drawing right");
-	     						ctx2.strokeRect(lower(coordinates_table[i][1], coordinates_table[i][3]), lower(coordinates_table[i][2], coordinates_table[i][4]), absolute(coordinates_table[i][1], coordinates_table[i][3]), absolute(coordinates_table[i][2], coordinates_table[i][4]));
-	     					}
-	     				}
-	     			}
+					canvas_clear("midLeft_canvas");
+					canvas_clear("midRight_canvas");
+					for(var i=0;i<coordinates_table.length;i++){
+						draw(coordinates_table[i][0],coordinates_table[i][1],coordinates_table[i][2],coordinates_table[i][3],coordinates_table[i][4],"green");
+					}
 				}
 				window.onkeydown = function(){
 					if(event.keyCode == 65){
