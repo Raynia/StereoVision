@@ -3,22 +3,25 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, StreamingHttpResponse
 from django.urls import reverse
 from django.views import generic
-from .camera import VideoCamera
+from .camera import StereoCamera as sc
 import cv2 as cv
 
 from .models import CameraInfo, TargetImage, Userdata
 
-cam = VideoCamera.VideoCamera()
+stereoCamera = sc.StereoCamera()
 
 # Stereovision View
 #########################################################################
 def init(request):
     init_list = [CameraInfo.objects.all(), Userdata.objects.all(), TargetImage.objects.all()]
 
+    #DB 초기화
     for i in init_list:
         if i.exists():
-            i.delete()    
-            
+            i.delete()
+        
+    stereoCamera.ReleaseOtherCamera(0,1)
+
     return HttpResponseRedirect(reverse('stereovision:setting')) 
 
 def main(request):
@@ -35,23 +38,23 @@ def main(request):
 def setting(request):
     return render(request, 'stereovision/setting.html')
 
-def gen(camera):    
+def gen(lr):
     while True:
-        frame = camera.get_frame()
+        frame = stereoCamera.GetFrame(lr)
         yield(b'--frame\r\n'
               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')  
 
 #Streaming left-side video which player choose
 def video_left(request):
     try:
-        return StreamingHttpResponse(gen(cam), content_type='multipart/x-mixed-replace;boundary=frame')
+        return StreamingHttpResponse(gen(0), content_type='multipart/x-mixed-replace;boundary=frame')
     except:  # This is bad! replace it with proper handling
         pass
 
 #Streaming right-side video which player choose
 def video_right(request):
     try:
-        return StreamingHttpResponse(gen(VideoCamera()), content_type='multipart/x-mixed-replace;boundary=frame')
+        return StreamingHttpResponse(gen(1), content_type='multipart/x-mixed-replace;boundary=frame')
     except:  # This is bad! replace it with proper handling
         pass
 

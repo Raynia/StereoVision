@@ -18,3 +18,5 @@ class Camera:
         elif setting == 'Format':
             self.cam.set(cv.CAP_PROP_FOURCC, value)
     
+    def Release(self):
+        self.cam.release()
