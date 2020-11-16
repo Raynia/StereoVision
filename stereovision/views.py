@@ -187,9 +187,9 @@ def border_selection(request):
     image = np.asarray(bytearray(frame), dtype="uint8")
     image_encode = cv2.imdecode(image, cv2.IMREAD_COLOR)
 
-    cv2.imwrite("frame.jpg", image_encode)
+    #cv2.imwrite("frame.jpg", image_encode)
 
-    q = TargetImage(target_image_byte = frame, target_point_x1 = x1, target_point_y1 = y1, target_point_x2 = x2, target_point_y2 = y2)
+    q = TargetImage(target_image = frame, target_point_x1 = x1, target_point_y1 = y1, target_point_x2 = x2, target_point_y2 = y2)
     q.save()
     return HttpResponseRedirect(reverse('stereovision:main'))
 
