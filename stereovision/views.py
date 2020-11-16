@@ -7,14 +7,14 @@ from .camera import StereoCamera as sc
 import cv2
 import numpy as np
 
-from .models import CameraInfo, TargetImage, Userdata, CameraList, PreviewCamera
+from .models import TargetImage, Userdata, CameraList, PreviewCamera
 
 stereoCamera = sc.StereoCamera()
 
 # Stereovision View
 #########################################################################
 def init(request):
-    init_list = [CameraInfo.objects.all(), Userdata.objects.all(), TargetImage.objects.all(), CameraList.objects.all(), PreviewCamera.objects.all()]
+    init_list = [Userdata.objects.all(), TargetImage.objects.all(), CameraList.objects.all(), PreviewCamera.objects.all()]
 
     #DB 초기화
     for i in init_list:
