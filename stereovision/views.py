@@ -4,7 +4,8 @@ from django.http import HttpResponseRedirect, HttpResponse, StreamingHttpRespons
 from django.urls import reverse
 from django.views import generic
 from .camera import StereoCamera as sc
-import cv2 as cv
+import cv2
+import numpy as np
 
 from .models import CameraInfo, TargetImage, Userdata, CameraList, PreviewCamera
 
@@ -181,9 +182,14 @@ def border_selection(request):
     x2, y2 = request.POST['x2'], request.POST['y2'] # destination point
 
     lr = 0 if camera_pos == "left" else 1
-    image = stereoCamera.GetLRFrame(lr)   
+    frame = stereoCamera.GetLRFrame(lr)   
     
-    q = TargetImage(target_image = image, target_point_x1 = x1, target_point_y1 = y1, target_point_x2 = x2, target_point_y2 = y2)
+    image = np.asarray(bytearray(frame), dtype="uint8")
+    image_encode = cv2.imdecode(image, cv2.IMREAD_COLOR)
+
+    cv2.imwrite("frame.jpg", image_encode)
+
+    q = TargetImage(target_image_byte = frame, target_point_x1 = x1, target_point_y1 = y1, target_point_x2 = x2, target_point_y2 = y2)
     q.save()
     return HttpResponseRedirect(reverse('stereovision:main'))
 
