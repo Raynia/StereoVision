@@ -19,6 +19,7 @@
 			var area_selection_mode="off";
 			var ready_to_area_commit="off";
 
+			var post_x1, post_x2, post_y1, post,y2 = 0;
 			
 			$(function(){
 				//카메라 선택 모드 시작
@@ -161,6 +162,7 @@
 						canvas_clear("temp_canvas2");
 						draw_all();
 						ready_to_area_commit="off";
+						setPost(camera_selection, cameraX_from_temp, cameraY_from_temp, cameraX_to_temp, cameraY_to_temp);
 					}
 				});
 
@@ -202,6 +204,14 @@
 						alert("이벤트 발생");
 					}
 				};
+
+				function setPost(pos, x1, y1, x2, y2){
+					document.getElementById("camera_pos").setAttribute("value", pos);
+					document.getElementById("x1").setAttribute("value", x1);
+					document.getElementById("y1").setAttribute("value", y1);
+					document.getElementById("x2").setAttribute("value", x2);
+					document.getElementById("y2").setAttribute("value", y2);
+				}
 			});
 		</script>
 	</head>
@@ -212,6 +222,20 @@
 			</div>
 			<div id="area_commit_div">
 				<button id="area_commit_button">area commit</button>
+				<form action="{% url 'stereovision:border_selection' %}", method="POST">
+				{% csrf_token %}
+				<label for="camera_pos"> pos: </label>
+				<input type="text", name="camera_pos", id="camera_pos", value="0"><br>
+				<label for="x1"> x1: </label>
+				<input type="number", name="x1", id="x1", value="0"><br>
+				<label for="y1"> y1: </label>
+				<input type="number", name="y1", id="y1", value="0"><br>
+				<label for="x2"> x2: </label>
+				<input type="number", name="x2", id="x2", value="0"><br>
+				<label for="y2"> y2: </label>
+				<input type="number", name="y2", id="y2", value="0"><br>
+				<input type="submit", value="commit"><br>
+				</form>
 			</div>
 			<div id="mode_change_btn_div">
 				<button id="mode_change_btn">area selection</button>

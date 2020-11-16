@@ -13,7 +13,8 @@ urlpatterns = [
     path('userdata_update/', views.userdata_update, name="userdata_update"),    
     path('userdata_delete/', views.userdata_delete, name="userdata_delete"),  
     path('setting/', views.setting, name="setting"),
-    path('main/setting/', views.setting, name="setting"), #only use javascript location.href
+    path('main/setting/', views.setting, name="setting"),
+    path('border_selection/', views.border_selection, name="border_selection"),
 
     #Streaming Path
     path('video_left', views.video_left, name='video_left'),

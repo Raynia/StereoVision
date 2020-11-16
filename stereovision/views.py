@@ -65,8 +65,16 @@ def main(request):
         userdata_list = Userdata.objects.first()    
     else:
         userdata_list = None
+
+    if TargetImage.objects.all().exists():
+        target_list = Userdata.objects.all()
+
+    else:
+        target_list = None
+
     contents = {
         'userdata_list': userdata_list,
+        'target_list': target_list,
     }
 
     stereoCamera.ReleaseOtherCamera(userdata_list.user_left_camera, userdata_list.user_right_camera)
@@ -167,8 +175,16 @@ def userdata_update(request):
     return HttpResponseRedirect(reverse('stereovision:main'))
     
 def border_selection(request):
-    x1, y1 = request.POST[''], request.POST[''] # start point
-    x2, y2 = request.POST[''], request.POST[''] # destination point
+    camera_pos = request.POST['camera_pos']
+    test_bytes_var = b'\x00'
+    x1, y1 = request.POST['x1'], request.POST['y1'] # start point
+    x2, y2 = request.POST['x2'], request.POST['y2'] # destination point
+
+    lr = 0 if camera_pos == "left" else 1
+    image = stereoCamera.GetLRFrame(lr)   
+    
+    q = TargetImage(target_image = image, target_point_x1 = x1, target_point_y1 = y1, target_point_x2 = x2, target_point_y2 = y2)
+    q.save()
     return HttpResponseRedirect(reverse('stereovision:main'))
 
 # Save target image to target list table
