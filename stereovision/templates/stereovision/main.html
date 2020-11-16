@@ -19,7 +19,7 @@
 			var area_selection_mode="off";
 			var ready_to_area_commit="off";
 
-			var post_x1, post_x2, post_y1, post,y2 = 0;
+			var post_x1=0, post_x2=0, post_y1=0, post,y2=0;
 			
 			$(function(){
 				//카메라 선택 모드 시작
@@ -31,15 +31,18 @@
 						ready_to_area_commit="off";
 						$("#midLeft_div").css("width","800px").css("height","600px").css("position","absolute").css("left","0px").css("visibility","visible");
 						$("#midRight_div").css("width","800px").css("height","600px").css("position","absolute").css("left","800px").css("visibility","visible");
+						$("#midLeft_image").css("width","800px").css("height","600px").css("position","absolute").css("left","0px");
 						$("#midLeft_canvas").css("visibility","hidden");
-						//canvas_clear("temp_canvas1");
+						$("#midLeft_canvas_temp").css("visibility","hidden");
 						console.log(camera_selection);
 					}else if(camera_selection=="none"&&mode=="camera_selection"){
 						camera_selection="left";
 						selected_canvas="midLeft_canvas";
 						$("#midLeft_div").css("width","1600px").css("height","1200px").css("position","absolute").css("left","0px");
+						$("#midLeft_image").css("width","1600px").css("height","1200px").css("position","absolute");
 						$("#midRight_div").css("visibility","hidden");
 						$("#midLeft_canvas").css("visibility","visible");
+						$("#midLeft_canvas_temp").css("visibility","visible");
 						$("#midRight_canvas").css("visibility","hidden");
 						console.log(camera_selection);
 					}
@@ -51,15 +54,18 @@
 						ready_to_area_commit="off";
 						$("#midLeft_div").css("width","800px").css("height","600px").css("position","absolute").css("left","0px").css("visibility","visible");
 						$("#midRight_div").css("width","800px").css("height","600px").css("position","absolute").css("left","800px").css("visibility","visible");
+						$("#midRight_image").css("width","800px").css("height","600px").css("position","absolute").css("left","0px");
 						$("#midRight_canvas").css("visibility","hidden");
-						//canvas_clear("temp_canvas2");
+						$("#midRight_canvas_temp").css("visibility","hidden");
 						console.log(camera_selection);
 					}else if(camera_selection=="none"&&mode=="camera_selection"){
 						camera_selection="right";
 						selected_canvas="midRight_canvas"
 						$("#midRight_div").css("width","1600px").css("height","1200px").css("position","absolute").css("left","0px");
+						$("#midRight_image").css("width","1600px").css("height","1200px").css("position","absolute");
 						$("#midLeft_div").css("visibility","hidden");
 						$("#midRight_canvas").css("visibility","visible");
+						$("#midRight_canvas_temp").css("visibility","visible");
 						$("#midLeft_canvas").css("visibility","visible");
 						console.log(camera_selection);
 					}
@@ -70,7 +76,7 @@
 						cameraX_from_temp=event.pageX;
 						cameraY_from_temp=event.pageY;
 						area_selection_mode="on";
-						canvas_clear("temp_canvas1");
+						canvas_clear("midLeft_canvas_temp");
 						console.log("left_camera \nfrom 	"+cameraX_from_temp+", "+cameraY_from_temp);
 					}
 				});
@@ -80,7 +86,7 @@
 						cameraY_to_temp=event.pageY;
 						area_selection_mode="off";
 						ready_to_area_commit="on";
-						draw("temp_canvas1",cameraX_from_temp,cameraY_from_temp,cameraX_to_temp,cameraY_to_temp,"red");
+						draw("midLeft_canvas_temp",cameraX_from_temp,cameraY_from_temp,cameraX_to_temp,cameraY_to_temp,"red");
 						console.log("to 		"+cameraX_to_temp+", "+cameraY_to_temp);
 
 					}
@@ -97,7 +103,7 @@
 						cameraX_from_temp=event.pageX;
 						cameraY_from_temp=event.pageY;
 						area_selection_mode="on";
-						canvas_clear("temp_canvas2");
+						canvas_clear("midRight_canvas_temp");
 						console.log("right_camera \nfrom 	"+cameraX_from_temp+", "+cameraY_from_temp);
 					}
 				});
@@ -107,7 +113,7 @@
 						cameraY_to_temp=event.pageY;
 						area_selection_mode="off";
 						ready_to_area_commit="on";
-						draw("temp_canvas2",cameraX_from_temp,cameraY_from_temp,cameraX_to_temp,cameraY_to_temp,"red");
+						draw("midRight_canvas_temp",cameraX_from_temp,cameraY_from_temp,cameraX_to_temp,cameraY_to_temp,"red");
 						console.log("to 		"+cameraX_to_temp+", "+cameraY_to_temp);
 					}
 				});
@@ -158,8 +164,8 @@
 						alert("범위를 지정해야 합니다.");
 					}else{
 						coordinates_table.push([selected_canvas,cameraX_from_temp,cameraY_from_temp,cameraX_to_temp,cameraY_to_temp]);
-						canvas_clear("temp_canvas1");
-						canvas_clear("temp_canvas2");
+						canvas_clear("midLeft_canvas_temp");
+						canvas_clear("midRight_canvas_temp");
 						draw_all();
 						ready_to_area_commit="off";
 						setPost(camera_selection, cameraX_from_temp, cameraY_from_temp, cameraX_to_temp, cameraY_to_temp);
@@ -247,14 +253,14 @@
 		</div>
 		<div id="mid_div" class="division">
 			<div id="midLeft_div" class="division">
-				<img src="{% url 'stereovision:video_left' %}">
+				<img id="midLeft_image" src="{% url 'stereovision:video_left' %}">
 				<canvas id="midLeft_canvas" width="1600" height="1200"></canvas>
-				<canvas id="temp_canvas1" width="1600" height="1200"></canvas>
+				<canvas id="midLeft_canvas_temp" width="1600" height="1200"></canvas>
 			</div>
 			<div id="midRight_div" class="division">
-				<img src="{% url 'stereovision:video_right' %}">	
+				<img id="midRight_image" src="{% url 'stereovision:video_right' %}">	
 				<canvas id="midRight_canvas" width="1600" height="1200"></canvas>
-				<canvas id="temp_canvas2" width="1600" height="1200"></canvas>
+				<canvas id="midRight_canvas_temp" width="1600" height="1200"></canvas>
 			</div>
 		</div>
 		<div id="right_div" class="division">
