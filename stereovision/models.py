@@ -25,7 +25,7 @@ class Userdata(models.Model):
         return _output
 
 class TargetImage(models.Model):
-    target_image_byte = models.BinaryField(null=False)
+    target_image = models.BinaryField(null=False)
     target_point_x1 = models.IntegerField(null=None)
     target_point_y1 = models.IntegerField(null=None)
     target_point_x2 = models.IntegerField(null=None)
