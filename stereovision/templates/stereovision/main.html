@@ -19,7 +19,6 @@
 			var area_selection_mode="off";
 			var ready_to_area_commit="off";
 
-			var post_x1=0, post_x2=0, post_y1=0, post_y2=0;
 			$(function(){
 				var resolution_w = $("#resolution_width").val()
 				var resolution_h = $("#resolution_height").val()
@@ -291,5 +290,7 @@
 		<label for="distance"> distance: </label>
 		<input type="number", name="distance", id="distance", value="0" disabled="disabled"><br>
 		</div>
+		<input id="resolution_width" value="{{userdata_list.user_width}}"/>
+		<input id="resolution_height" value="{{userdata_list.user_height}}"/>
 	</body>
 </html>
