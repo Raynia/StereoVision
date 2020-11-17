@@ -10,6 +10,7 @@ import numpy as np
 from .models import TargetImage, Userdata, CameraList, PreviewCamera
 
 stereoCamera = sc.StereoCamera()
+image_list = []
 
 # Stereovision View
 #########################################################################
@@ -76,6 +77,7 @@ def main(request):
     contents = {
         'userdata_list': userdata_list,
         'target_list': target_list,
+        'image_list': image_list
     }
 
     stereoCamera.ReleaseOtherCamera(userdata_list.user_left_camera, userdata_list.user_right_camera)
@@ -187,15 +189,12 @@ def border_selection(request):
     image = np.asarray(bytearray(frame), dtype="uint8")
     image_encode = cv2.imdecode(image, cv2.IMREAD_COLOR)
 
-    cv2.imwrite("frame.jpg", image_encode)
+    cv2.imwrite("/stereovision/static/frame.jpg", image_encode)
 
-    q = TargetImage(target_image_byte = frame, target_point_x1 = x1, target_point_y1 = y1, target_point_x2 = x2, target_point_y2 = y2)
+    q = TargetImage(target_image = frame, target_name = "", target_point_x1 = x1, target_point_y1 = y1, target_point_x2 = x2, target_point_y2 = y2)
     q.save()
     return HttpResponseRedirect(reverse('stereovision:main'))
-
-# Save target image to target list table
-def save_target(request):
-    return HttpResponseRedirect(reverse('stereovision:main'))
+  
 
 # Load target list table
 def open_target_list(request):
