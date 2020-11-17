@@ -272,10 +272,13 @@
 		</div>
 		<div id="right_div" class="division">
 			<button id="coordinates_table_clear_btn">table clear</button>
-			<button id="table_check_btn">table check</button><br>
+			<button id="table_check_btn">table check</button><br>			
 
-			<img src = "{% static "stereovision/frame.jpg"%}">
-
+			{% if target_list %}
+			{% for target in target_list %}
+			<img src = "{{ target.target_image.url }}"><br>
+			{% endfor %}
+			{% endif %}
 
 		</div>
 		<input id="resolution_width" value="{{userdata_list.user_width}}"/>

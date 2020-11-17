@@ -1,16 +1,20 @@
 import threading
+import cv2
+import numpy as np
+import os
+
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, StreamingHttpResponse
 from django.urls import reverse
 from django.views import generic
+from django.utils import timezone
+from django.conf import settings
+
 from .camera import StereoCamera as sc
-import cv2
-import numpy as np
 
 from .models import TargetImage, Userdata, CameraList, PreviewCamera
 
 stereoCamera = sc.StereoCamera()
-image_list = []
 
 # Stereovision View
 #########################################################################
@@ -69,7 +73,7 @@ def main(request):
         userdata_list = None
 
     if TargetImage.objects.all().exists():
-        target_list = Userdata.objects.all()
+        target_list = TargetImage.objects.all()
 
     else:
         target_list = None
@@ -77,7 +81,6 @@ def main(request):
     contents = {
         'userdata_list': userdata_list,
         'target_list': target_list,
-        'image_list': image_list
     }
 
     stereoCamera.ReleaseOtherCamera(userdata_list.user_left_camera, userdata_list.user_right_camera)
@@ -187,12 +190,19 @@ def border_selection(request):
     frame = stereoCamera.GetLRFrame(lr)   
     
     image = np.asarray(bytearray(frame), dtype="uint8")
-    image_encode = cv2.imdecode(image, cv2.IMREAD_COLOR)
-
-    cv2.imwrite("/stereovision/static/frame.jpg", image_encode)
-
-    q = TargetImage(target_image = frame, target_name = "", target_point_x1 = x1, target_point_y1 = y1, target_point_x2 = x2, target_point_y2 = y2)
+    image_encode = cv2.imdecode(image, cv2.IMREAD_COLOR)   
+    
+    q = TargetImage(target_bytes = frame, target_point_x1 = x1, target_point_y1 = y1, target_point_x2 = x2, target_point_y2 = y2)
     q.save()
+
+    image_name = ".jpg"
+    image_path = "media/" 
+    
+    t = TargetImage.objects.last()
+    cv2.imwrite(image_path + str(t.id) + image_name, image_encode)
+    t.target_image = str(t.id) + image_name
+    t.save()
+
     return HttpResponseRedirect(reverse('stereovision:main'))
   
 
