@@ -8,7 +8,6 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 		<meta http-equiv="X-UA-Compatible" content="ie=edge"/>
 		<link rel="stylesheet" href="{% static 'stereovision/main.css' %}?after">
-
 		<title>main page</title>
 		<script>
 			var camera_selection = "none";
@@ -19,8 +18,20 @@
 			var area_selection_mode="off";
 			var ready_to_area_commit="off";
 
-			var post_x1=0, post_x2=0, post_y1=0, post,y2=0;
-			
+			var post_x1=0, post_x2=0, post_y1=0, post_y2=0;
+			$(function(){
+    			$("#calc").on("submit", function(){
+        		var d = $(this).serialize();
+
+        		$.ajax({
+            		url: "{% url 'stereovision:border_selection' %}",
+            		type: "POST",
+            		data: d,
+
+        			});
+        		return false;
+   				});
+			});
 			$(function(){
 				var resolution_w = $("#resolution_width").val()
 				var resolution_h = $("#resolution_height").val()
@@ -235,7 +246,7 @@
 			</div>
 			<div id="area_commit_div">
 				<button id="area_commit_button">area commit</button>
-				<form action="{% url 'stereovision:border_selection' %}", method="POST">
+				<form action="{% url 'stereovision:border_selection' %}", method="POST" id="calc" name="calc">
 				{% csrf_token %}
 				<label for="camera_pos"> pos: </label>
 				<input type="text", name="camera_pos", id="camera_pos", value="0"><br>
@@ -279,9 +290,8 @@
 			<img src = "{{ target.target_image.url }}"><br>
 			{% endfor %}
 			{% endif %}
-
+		<label for="distance"> distance: </label>
+		<input type="number", name="distance", id="distance", value="0" disabled="disabled"><br>
 		</div>
-		<input id="resolution_width" value="{{userdata_list.user_width}}"/>
-		<input id="resolution_height" value="{{userdata_list.user_height}}"/>
 	</body>
 </html>

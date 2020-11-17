@@ -4,7 +4,7 @@ import numpy as np
 import os
 
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponse, StreamingHttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, StreamingHttpResponse, JsonResponse
 from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
