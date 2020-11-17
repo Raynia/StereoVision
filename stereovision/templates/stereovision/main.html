@@ -21,19 +21,6 @@
 
 			var post_x1=0, post_x2=0, post_y1=0, post_y2=0;
 			$(function(){
-    			$("#calc").on("submit", function(){
-        		var d = $(this).serialize();
-
-        		$.ajax({
-            		url: "{% url 'stereovision:border_selection' %}",
-            		type: "POST",
-            		data: d,
-
-        			});
-        		return false;
-   				});
-			});
-			$(function(){
 				var resolution_w = $("#resolution_width").val()
 				var resolution_h = $("#resolution_height").val()
 				//카메라 선택 모드 시작
@@ -185,7 +172,17 @@
 						setPost(camera_selection, cameraX_from_temp, cameraY_from_temp, cameraX_to_temp, cameraY_to_temp);
 					}
 				});
+				$("#calc").on("submit", function(){
+        			var d = $(this).serialize();
 
+        			$.ajax({
+            			url: "{% url 'stereovision:border_selection' %}",
+            			type: "POST",
+            			data: d,
+
+        				});
+        			return false;
+   				});
 				//함수
 				function lower(a, b){
 					if(a<b) return a;
