@@ -178,9 +178,13 @@
             			url: "{% url 'stereovision:border_selection' %}",
             			type: "POST",
             			data: d,
+						success:function(result){
+							$("#distance").attr("value", result.distance)
+						}
+        			});
 
-        				});
-        			return false;
+					return false;
+					
    				});
 				//함수
 				function lower(a, b){
@@ -279,16 +283,21 @@
 			</div>
 		</div>
 		<div id="right_div" class="division">
+
 			<button id="coordinates_table_clear_btn">table clear</button>
 			<button id="table_check_btn">table check</button><br>			
-
+			
 			{% if target_list %}
 			{% for target in target_list %}
-			<img src = "{{ target.target_image.url }}"><br>
+			from: {{target.target_point_x1}} / {{target.target_point_y1}}<br>
+			dst: {{target.target_point_x2}} / {{target.target_point_y2}}<br>
+			<br>
 			{% endfor %}
 			{% endif %}
-		<label for="distance"> distance: </label>
-		<input type="number", name="distance", id="distance", value="0" disabled="disabled"><br>
+
+			<label for="distance"> distance: </label>
+			<input type="number", name="distance", id="distance", value="0" disabled="disabled"><br>
+
 		</div>
 		<input id="resolution_width" value="{{userdata_list.user_width}}"/>
 		<input id="resolution_height" value="{{userdata_list.user_height}}"/>

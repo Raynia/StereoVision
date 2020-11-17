@@ -1,7 +1,6 @@
-import threading
 import cv2
 import numpy as np
-import os
+import json
 
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, StreamingHttpResponse, JsonResponse
@@ -181,6 +180,7 @@ def userdata_update(request):
     return HttpResponseRedirect(reverse('stereovision:main'))
     
 def border_selection(request):
+    
     camera_pos = request.POST['camera_pos']
     test_bytes_var = b'\x00'
     x1, y1 = request.POST['x1'], request.POST['y1'] # start point
@@ -203,7 +203,11 @@ def border_selection(request):
     t.target_image = str(t.id) + image_name
     t.save()
 
-    return HttpResponseRedirect(reverse('stereovision:main'))
+    distance = str(t.id)
+
+    return HttpResponse(json.dumps({
+        "distance": distance
+        }), content_type="application/json")
   
 
 # Load target list table
