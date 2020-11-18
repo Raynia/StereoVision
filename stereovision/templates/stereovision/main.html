@@ -16,8 +16,10 @@
 			var selected_canvas = "none";
 			var cameraX_from=0, cameraX_to=0, cameraX_from_temp=0, cameraX_to_temp=0;
 			var cameraY_from=0, cameraY_to=0, cameraY_from_temp=0, cameraY_to_temp=0;
+			var dragX=0, dragY=0;
 			var area_selection_mode="off";
 			var ready_to_area_commit="off";
+			var timer=0;
 
 			$(function(){
 				var resolution_w = $("#resolution_width").val()
@@ -77,23 +79,32 @@
 						cameraY_from_temp=event.pageY;
 						area_selection_mode="on";
 						canvas_clear("midLeft_canvas_temp");
+						
 						console.log("left_camera \nfrom 	"+cameraX_from_temp+", "+cameraY_from_temp);
 					}
 				});
+				$("#midLeft_div").mousemove(function(event){
+					if(camera_selection=="left"&&mode=="area_selection"&&area_selection_mode=="on"){
+						dragX=event.pageX;
+						dragY=event.pageY;
+						Drag("midLeft_canvas_temp",cameraX_from_temp,cameraY_from_temp);
+					}
+				});
 				$("#midLeft_div").mouseup(function(event){
-					if(camera_selection=="left"&&mode=="area_selection"){
+					if(camera_selection=="left"&&mode=="area_selection"&&area_selection_mode=="on"){
 						cameraX_to_temp=event.pageX;
 						cameraY_to_temp=event.pageY;
 						area_selection_mode="off";
 						ready_to_area_commit="on";
+						canvas_clear("midLeft_canvas_temp");
 						draw("midLeft_canvas_temp",cameraX_from_temp,cameraY_from_temp,cameraX_to_temp,cameraY_to_temp,"red");
 						console.log("to 		"+cameraX_to_temp+", "+cameraY_to_temp);
-
 					}
 				});
 				$("#midLeft_div").mouseleave(function(){
 					if(area_selection_mode=="on"){
 						area_selection_mode="off";
+						canvas_clear("midLeft_canvas_temp");
 						console.log("out of range");
 					}
 				});//왼쪽카메라 범위지정 끝
@@ -107,8 +118,15 @@
 						console.log("right_camera \nfrom 	"+cameraX_from_temp+", "+cameraY_from_temp);
 					}
 				});
+				$("#midRight_div").mousemove(function(event){
+					if(camera_selection=="right"&&mode=="area_selection"&&area_selection_mode=="on"){
+						dragX=event.pageX;
+						dragY=event.pageY;
+						Drag("midRight_canvas_temp",cameraX_from_temp,cameraY_from_temp);
+					}
+				});
 				$("#midRight_div").mouseup(function(event){
-					if(camera_selection=="right"&&mode=="area_selection"){
+					if(camera_selection=="right"&&mode=="area_selection"&&area_selection_mode=="on"){
 						cameraX_to_temp=event.pageX;
 						cameraY_to_temp=event.pageY;
 						area_selection_mode="off";
@@ -120,6 +138,7 @@
 				$("#midRight_div").mouseleave(function(event){
 					if(area_selection_mode=="on"){
 						area_selection_mode="off";
+						canvas_clear("midRight_canvas_temp");
 						console.log("out of range");
 					}
 				});//오른쪽카메라 범위지정 끝
@@ -219,6 +238,11 @@
 						draw(coordinates_table[i][0],coordinates_table[i][1],coordinates_table[i][2],coordinates_table[i][3],coordinates_table[i][4],"green");
 					}
 				}
+				function Drag(canvas, X_from, Y_from){
+						canvas_clear(canvas);
+						draw(canvas, X_from, Y_from, dragX, dragY,"red");
+				}
+
 				window.onkeydown = function(){
 					if(event.keyCode == 65){
 						alert("이벤트 발생");
