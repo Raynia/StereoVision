@@ -90,6 +90,12 @@ class Frames:
                 cv.rectangle(self.right_frame, ele[1][0], ele[1][1], (0, 0, 255), 2)
 
     #
+    def DetectAndMatch(self):
+        for ele in self.target_image_list:
+            self.target_border_points_list.append(ele.DetectingFeaturePoint(self.left_gray, self.right_gray))
+            self.target_feature_points_list.append(ele.MatchingFeaturePoint())
+
+    #
     def CalculateDistance(self):
         if self.target_feature_points_list:
             for ele in self.target_feature_points_list:
@@ -97,10 +103,12 @@ class Frames:
                 for index, point in enumerate(ele[0]):
                     temp_list.append(self.pixel_calculator.DistanceCalc(point.pt, ele[1][index].pt))
                     # print(self.pixel_calculator.DistanceCalc(point.pt, ele[1][index].pt))
-                try:
-                    self.target_distance_list.append(sum(temp_list) // len(temp_list))
-                except:
-                    self.target_distance_list.append(0)
+            try:
+                self.target_distance_list.append(sum(temp_list) // len(temp_list))
+            except:
+                print("err")
+                self.target_distance_list.append(0)
+        return self.target_distance_list
 
     #
     def SettingPixelCalculator(self, resolution, distance, fov):

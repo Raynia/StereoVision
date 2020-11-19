@@ -10,10 +10,16 @@ from django.utils import timezone
 from django.conf import settings
 
 from .camera import StereoCamera as sc
+from .camera import PixelCalculator as pc
+from .camera import Frames
 
 from .models import TargetImage, Userdata, CameraList, PreviewCamera
 
+pixelCalculator = pc.PixelCalculator((1280,960), 200, 80)
 stereoCamera = sc.StereoCamera()
+stereoCamera.AddSettingList('AutoFocus', 0)
+stereoCamera.AddSettingList('Format', cv2.VideoWriter_fourcc('M','J','P','G'))
+frames = Frames.Frames()
 
 # Stereovision View
 #########################################################################
@@ -83,7 +89,8 @@ def main(request):
     }
 
     stereoCamera.ReleaseOtherCamera(userdata_list.user_left_camera, userdata_list.user_right_camera)
-
+    stereoCamera.ApplySetting()
+    stereoCamera.ReadStart()
     return render(request, 'stereovision/main.html', contents)
 
 def setting(request):
@@ -164,9 +171,12 @@ def camera_preview(request):
 def userdata_update(request): 
     left_camera = request.POST['left_camera']
     right_camera = request.POST['right_camera']
-    width = request.POST['resolution']
+    width = int(request.POST['resolution'])
     height = int(width) // 4 * 3
-    distance = request.POST['distance']
+    distance = int(request.POST['distance'])
+
+    stereoCamera.AddSettingList('Resolution',(width, height))
+    pixelCalculator.SettingCamera((width, height), distance, 80)
 
     stereoCamera.pre_flag = False
 
@@ -183,12 +193,15 @@ def border_selection(request):
     
     camera_pos = request.POST['camera_pos']
     test_bytes_var = b'\x00'
-    x1, y1 = request.POST['x1'], request.POST['y1'] # start point
-    x2, y2 = request.POST['x2'], request.POST['y2'] # destination point
+    x1, y1 = int(request.POST['x1']), int(request.POST['y1']) # start point
+    x2, y2 = int(request.POST['x2']), int(request.POST['y2']) # destination point
 
     lr = 0 if camera_pos == "left" else 1
     frame = stereoCamera.GetLRFrame(lr)   
+    ori_frame = stereoCamera.GetBothFrame()
     
+    frames.StoreFrame(ori_frame[0],ori_frame[1])
+    frames.AddTarget(ori_frame[0][y1:y2,x1:x2])
     image = np.asarray(bytearray(frame), dtype="uint8")
     image_encode = cv2.imdecode(image, cv2.IMREAD_COLOR)   
     
@@ -204,11 +217,18 @@ def border_selection(request):
     t.save()
 
     distance = str(t.id)
-
+    distance_calculate()
     return HttpResponse(json.dumps({
         "distance": distance
         }), content_type="application/json")
   
+
+
+def distance_calculate():
+    frames.DetectAndMatch()
+    distance_list = frames.CalculateDistance()
+    print(distance_list)
+    return
 
 # Load target list table
 def open_target_list(request):

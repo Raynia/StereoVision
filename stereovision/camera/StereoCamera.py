@@ -47,7 +47,7 @@ class StereoCamera:
                 self.left_frame = self.left_cam.Read()
                 self.right_frame = self.right_cam.Read()
             except:
-                self.left_frame = np.zeros((500,500,3), dtype= np.uint8)
+                self.left_frame = np.zeros((640,480,3), dtype= np.uint8)
                 self.right_frame = self.left_frame.copy()
 
     # #
@@ -65,10 +65,12 @@ class StereoCamera:
             if cam not in cams:
                 cam.Release()
                 self.cam_list.remove(cam)
+        self.pre_flag = False
+
+    def ReadStart(self):
         if not self.flag:
             self.flag = True
             self.capture.start()
-        self.pre_flag = False
 
     #모든 웹캠들을 종료
     def ReleaseAll(self):
@@ -92,6 +94,14 @@ class StereoCamera:
         return image[1].tobytes()
     
     def GetLRFrame(self, lr):
-        frame = self.left_frame if lr == 0 else self.right_frame
-        image = cv.imencode('.jpg', frame)
-        return image[1].tobytes()
+        try:
+            frame = self.left_frame if lr == 0 else self.right_frame
+            image = cv.imencode('.jpg', frame)
+            return image[1].tobytes()
+        except:
+            frame = np.zeros((640,480,3), dtype= np.uint8)
+            image = cv.imencode('.jpg', frame)
+            return image[1].tobytes()
+            
+    def GetBothFrame(self):
+        return self.left_frame, self.right_frame
