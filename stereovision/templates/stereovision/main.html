@@ -20,7 +20,8 @@
 			var area_selection_mode="off";
 			var ready_to_area_commit="off";
 			var timer=0;
-
+			var color_table=["#FE9A2E","#FFFF00","#BFFF00","#01DF01","#00FFFF","#0101DF","#7401DF","#FE2EF7","#848484","#000000"];
+			var color_index=0;
 			$(function(){
 				var resolution_w = $("#resolution_width").val()
 				var resolution_h = $("#resolution_height").val()
@@ -182,7 +183,9 @@
 					if(ready_to_area_commit=="off"){
 						alert("범위를 지정해야 합니다.");
 					}else{
-						coordinates_table.push([selected_canvas,cameraX_from_temp,cameraY_from_temp,cameraX_to_temp,cameraY_to_temp]);
+						coordinates_table.push([selected_canvas,cameraX_from_temp,cameraY_from_temp,cameraX_to_temp,cameraY_to_temp,color_table[color_index]]);
+						color_index++;
+						if(color_index==10) color_index=0;
 						canvas_clear("midLeft_canvas_temp");
 						canvas_clear("midRight_canvas_temp");
 						draw_all();
@@ -235,19 +238,13 @@
 					canvas_clear("midLeft_canvas");
 					canvas_clear("midRight_canvas");
 					for(var i=0;i<coordinates_table.length;i++){
-						draw(coordinates_table[i][0],coordinates_table[i][1],coordinates_table[i][2],coordinates_table[i][3],coordinates_table[i][4],"green");
+						draw(coordinates_table[i][0],coordinates_table[i][1],coordinates_table[i][2],coordinates_table[i][3],coordinates_table[i][4],coordinates_table[i][5]);
 					}
 				}
 				function Drag(canvas, X_from, Y_from){
 						canvas_clear(canvas);
 						draw(canvas, X_from, Y_from, dragX, dragY,"red");
 				}
-
-				window.onkeydown = function(){
-					if(event.keyCode == 65){
-						alert("이벤트 발생");
-					}
-				};
 
 				function setPost(pos, x1, y1, x2, y2){
 					xx1 = Math.floor(x1 * resolution_w / 1600.0)
