@@ -37,16 +37,21 @@
 						$("#midLeft_image").css("width","800px").css("height","600px").css("position","absolute").css("left","0px");
 						$("#midLeft_canvas").css("visibility","hidden");
 						$("#midLeft_canvas_temp").css("visibility","hidden");
+						$("#midLeft_canvas_preview").css("visibility","visible");
+						$("#midRight_canvas_preview").css("visibility","visible");
 						console.log(camera_selection);
 					}else if(camera_selection=="none"&&mode=="camera_selection"){
 						camera_selection="left";
 						selected_canvas="midLeft_canvas";
+						canvas_clear(selected_canvas+"_temp");
 						$("#midLeft_div").css("width","1600px").css("height","1200px").css("position","absolute").css("left","0px");
 						$("#midLeft_image").css("width","1600px").css("height","1200px").css("position","absolute");
 						$("#midRight_div").css("visibility","hidden");
 						$("#midLeft_canvas").css("visibility","visible");
 						$("#midLeft_canvas_temp").css("visibility","visible");
 						$("#midRight_canvas").css("visibility","hidden");
+						$("#midLeft_canvas_preview").css("visibility","hidden");
+						$("#midRight_canvas_preview").css("visibility","hidden");
 						console.log(camera_selection);
 					}
 				});
@@ -60,16 +65,21 @@
 						$("#midRight_image").css("width","800px").css("height","600px").css("position","absolute").css("left","0px");
 						$("#midRight_canvas").css("visibility","hidden");
 						$("#midRight_canvas_temp").css("visibility","hidden");
+						$("#midLeft_canvas_preview").css("visibility","visible");
+						$("#midRight_canvas_preview").css("visibility","visible");
 						console.log(camera_selection);
 					}else if(camera_selection=="none"&&mode=="camera_selection"){
 						camera_selection="right";
 						selected_canvas="midRight_canvas"
+						canvas_clear(selected_canvas+"_temp");
 						$("#midRight_div").css("width","1600px").css("height","1200px").css("position","absolute").css("left","0px");
 						$("#midRight_image").css("width","1600px").css("height","1200px").css("position","absolute");
 						$("#midLeft_div").css("visibility","hidden");
 						$("#midRight_canvas").css("visibility","visible");
 						$("#midRight_canvas_temp").css("visibility","visible");
-						$("#midLeft_canvas").css("visibility","visible");
+						$("#midLeft_canvas").css("visibility","hidden");
+						$("#midLeft_canvas_preview").css("visibility","hidden");
+						$("#midRight_canvas_preview").css("visibility","hidden");
 						console.log(camera_selection);
 					}
 				});//카메라 선택 모드 끝
@@ -165,7 +175,9 @@
 				$("#coordinates_table_clear_btn").on("click",function(){//전체 삭제 버튼
 					coordinates_table=[];
 					canvas_clear("midLeft_canvas");
+					canvas_clear("midLeft_canvas_preview");
 					canvas_clear("midRight_canvas");
+					canvas_clear("midRight_canvas_preview");
 				});
 				$("#camera_setting_btn").on("click",function(){
 					if (confirm("카메라 설정 페이지로 이동합니다.")==true){//확인
@@ -179,7 +191,7 @@
 						console.log(coordinates_table[i][0]+" "+coordinates_table[i][1]+" "+coordinates_table[i][2]+" "+coordinates_table[i][3]+" "+coordinates_table[i][4]);
 					}
 				});
-				$("#area_commit_button").on("click",function(){
+				$("#area_commit_button").on("click",function(){//area commit 버튼
 					if(ready_to_area_commit=="off"){
 						alert("범위를 지정해야 합니다.");
 					}else{
@@ -208,6 +220,7 @@
 					return false;
 					
    				});
+
 				//함수
 				function lower(a, b){
 					if(a<b) return a;
@@ -236,9 +249,12 @@
 				}
 				function draw_all(){
 					canvas_clear("midLeft_canvas");
+					canvas_clear("midLeft_canvas_preview");
 					canvas_clear("midRight_canvas");
+					canvas_clear("midRight_canvas_preview");
 					for(var i=0;i<coordinates_table.length;i++){
 						draw(coordinates_table[i][0],coordinates_table[i][1],coordinates_table[i][2],coordinates_table[i][3],coordinates_table[i][4],coordinates_table[i][5]);
+						draw(coordinates_table[i][0]+"_preview",coordinates_table[i][1]/2,coordinates_table[i][2]/2,coordinates_table[i][3]/2,coordinates_table[i][4]/2,coordinates_table[i][5]);
 					}
 				}
 				function Drag(canvas, X_from, Y_from){
@@ -296,11 +312,13 @@
 				<img id="midLeft_image" src="{% url 'stereovision:video_left' %}">
 				<canvas id="midLeft_canvas" width="1600" height="1200"></canvas>
 				<canvas id="midLeft_canvas_temp" width="1600" height="1200"></canvas>
+				<canvas id="midLeft_canvas_preview" width="800px" height="600px"></canvas>
 			</div>
 			<div id="midRight_div" class="division">
 				<img id="midRight_image" src="{% url 'stereovision:video_right' %}">	
 				<canvas id="midRight_canvas" width="1600" height="1200"></canvas>
 				<canvas id="midRight_canvas_temp" width="1600" height="1200"></canvas>
+				<canvas id="midRight_canvas_preview" width="800px" height="600px"></canvas>
 			</div>
 		</div>
 		<div id="right_div" class="division">
