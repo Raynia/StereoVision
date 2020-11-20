@@ -249,11 +249,16 @@
 				}
 				function draw_all(){
 					canvas_clear("midLeft_canvas");
-					canvas_clear("midLeft_canvas_preview");
 					canvas_clear("midRight_canvas");
-					canvas_clear("midRight_canvas_preview");
+					draw_preview();
 					for(var i=0;i<coordinates_table.length;i++){
 						draw(coordinates_table[i][0],coordinates_table[i][1],coordinates_table[i][2],coordinates_table[i][3],coordinates_table[i][4],coordinates_table[i][5]);
+					}
+				}
+				function draw_preview(){
+					canvas_clear("midLeft_canvas_preview");
+					canvas_clear("midRight_canvas_preview");
+					for(var i=0;i<coordinates_table.length;i++){
 						draw(coordinates_table[i][0]+"_preview",coordinates_table[i][1]/2,coordinates_table[i][2]/2,coordinates_table[i][3]/2,coordinates_table[i][4]/2,coordinates_table[i][5]);
 					}
 				}
