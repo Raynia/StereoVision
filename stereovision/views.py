@@ -1,7 +1,8 @@
 import json
-
 import cv2
 import numpy as np
+from collections import OrderedDict
+
 from django.conf import settings
 from django.forms.models import model_to_dict
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, StreamingHttpResponse
@@ -225,25 +226,46 @@ def distance_calculate():
     return
 
 # Load target list table
-def target_table_check(request):
-    if TargetImage.objects.all().exists():
-        target_table = TargetImage.objects.all()
-        target_table = list(target_table.values())
-
-        distance_list = frames.GetTargetDistanceList()
-        border_points_list = frames.GetBorderPointsList()
-
-        print(target_table)
-        print(distance_list)
-        print(border_points_list)
-        return HttpResponse(json.dumps(target_table), content_type="application/json")
+def target_table_check(request):    
     
-    else:
-        return HttpResponse(json.dumps({"target_table": "None of the data",}), content_type="application/json")
+    distance_list = frames.GetTargetDistanceList()
+    border_points_list = frames.GetBorderPointsList()
+    target_table = []
 
-def target_table_delete(request):
+    if TargetImage.objects.all().exists() and TargetImage.objects.count() == len(distance_list):
+        target_list = TargetImage.objects.all()
+        target_list = list(target_list.values())
+        for idx, val in enumerate(border_points_list):            
+            target_table_dict = {
+                'id': target_list[idx]['id'],
+                'distance': distance_list[idx],
+                'left_x1': val[0][0][0],
+                'left_y1': val[0][0][1],
+                'left_x2': val[0][1][0],
+                'left_y2': val[0][1][1],
+                'right_x1': val[1][0][0],
+                'right_y1': val[1][0][1],
+                'right_x2': val[1][1][0],
+                'right_y2': val[1][1][1],
+            }
+            target_table.append(target_table_dict)
+        print(target_table)
+    
+        return HttpResponse(json.dumps(target_table), content_type="application/json")   
+
+    else:        
+        print(TargetImage.objects.all())
+        print(distance_list)
+        return HttpResponse(json.dumps({"flag":"empty", "text": "Empty table or Please clear the table",}), content_type="application/json")
+
+def target_table_all_clear(request):
     t = TargetImage.objects.all()
     if t.exists():
         t.delete()
+    frames.AllDeleteTarget()
+
+    return HttpResponse(json.dumps({"dumy": "dumy",}), content_type="application/json")
+
+def target_table_index_clear(request):    
 
     return HttpResponse(json.dumps({"dumy": "dumy",}), content_type="application/json")

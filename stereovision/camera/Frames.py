@@ -123,5 +123,8 @@ class Frames:
             except:
                 pass
     #
+    def GetTargetDistanceList(self):
+        return self.target_distance_list
+    #
     def GetBorderPointsList(self):
         return self.target_border_points_list

@@ -22,7 +22,11 @@
 			var timer=0;
 			var color_table=["#FE9A2E","#FFFF00","#BFFF00","#01DF01","#00FFFF","#0101DF","#7401DF","#FE2EF7","#848484","#000000"];
 			var color_index=0;
+			var table_enabled_flag=false;
+			var table_checked_flag=false;
+			var refresh_flag = null;
 			
+
 			$(function(){
 				var resolution_w = $("#resolution_width").val()
 				var resolution_h = $("#resolution_height").val()
@@ -172,7 +176,10 @@
 					canvas_clear("midRight_canvas");
 
 					$.ajax({
-            			url: "{% url 'stereovision:target_table_delete' %}",					
+            			url: "{% url 'stereovision:target_table_all_clear' %}",
+						success: function(){
+							$("#table_check_btn").click()
+						}				
 					});
 				});
 				$("#camera_setting_btn").on("click",function(){
@@ -190,10 +197,32 @@
             			url: "{% url 'stereovision:target_table_check' %}",
 						dataType: "json",
 						success: function(result){
-
-						},						
+							var html = "";
+							if (result.flag == "empty"){
+								html += "<tr>";
+								html += "<td colspan='3'> Empty Table<br>" + result.text + "</td>";
+								html += "</tr>";
+								table_enabled_flag = false;
+							}
+							else{
+								for (key in result){
+									html += "<tr>";
+									html += "<td>" + "<a href='/media/"+ result[key].id + ".jpg'>" + result[key].id + "</a> </td>";
+									html += "<td>" + result[key].distance + "</td>";
+									html += "<td>" + "<input type='checkbox' name='target_index' value='" + result[key].id + "'>" + "</td>";
+									html += "</tr>";
+									table_enabled_flag = true;
+									console.log(table_enabled_flag)
+								}							
+							}					
+							$("#target_table_body").empty();
+							$("#target_table_body").append(html);
+							
+						},					
 					});
+					console.log("test")
 				});
+
 				$("#area_commit_button").on("click",function(){
 					if(ready_to_area_commit=="off"){
 						alert("범위를 지정해야 합니다.");
@@ -213,13 +242,31 @@
             				data: d,
 							success:function(result){
 								$("#calc_distance").attr("value", result.distance)
+								$("#table_check_btn").click();
 							}
         				});
 					}
 					setPost("", 0, 0, 0, 0);
 					return false;
+				});		
+				
+				$("#target_index").on("click",function(){
+					console.log("test")
+					$("index_clear_cancel_btn").removeAttr("disabled");
 				});
-					
+
+				$("#index_clear_submit_btn").on("click", function(){
+					$.ajax({
+						url: "{% url 'stereovision:target_table_index_clear' %}",
+						type: "POST",
+						success: function(){
+							$("#table_check_btn").click();
+						}
+					});
+					return false;
+				});
+
+
 				//함수
 				function lower(a, b){
 					if(a<b) return a;
@@ -270,9 +317,17 @@
 					document.getElementById("x2").setAttribute("value", xx2);
 					document.getElementById("y2").setAttribute("value", yy2);
 				}
-				var csrftoken = getCookie('csrftoken')
+
+				function startAutoTargetTableRefresh(){
+									
+				}
+
+				function stopAutoTargetTAbleRefresh(){
+
+				}
 
 			});
+			
 		</script>
 	</head>
 	<body>
@@ -319,14 +374,19 @@
 			</div>
 		</div>
 		<div id="right_div" class="division">
-
 			<button id="table_check_btn">table check</button>		
 			<button id="coordinates_table_clear_btn">table clear</button><br>
-			
-			<form id="target_list" name="target_list">
-				
-				<label for="calc_distance"> distance: </label>
-				<input type="number", name="calc_distance", id="calc_distance", value="0" disabled="disabled"><br>
+			<form id="target_table_index_clear" name="target_table_index_clear">
+			{% csrf_token %}
+			<table border="1" style="text-align: center;"id="target_table">
+			<thead id="target_table_head">
+			<tr> <th>id</th> <th>distance</th> <th>checkbox</th> </tr>
+			</thead>
+			<tbody id="target_table_body"></tbody>
+			</table>
+			<input type="submit" id="index_clear_submit_btn" name="index_clear_submit_btn" value="Delete Target" >
+			<input type="submit" id="index_clear_cancel_btn" name="index_clear_cancel_btn" value="Cancel" disabled="disabled">
+			</form>
 		</div>
 		<input id="resolution_width" value="{{userdata_list.user_width}}"/>
 		<input id="resolution_height" value="{{userdata_list.user_height}}"/>
