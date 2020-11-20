@@ -91,6 +91,7 @@ class Frames:
 
     #
     def DetectAndMatch(self):
+        self.target_border_points_list.clear()
         for ele in self.target_image_list:
             self.target_border_points_list.append(ele.DetectingFeaturePoint(self.left_gray, self.right_gray))
             self.target_feature_points_list.append(ele.MatchingFeaturePoint())

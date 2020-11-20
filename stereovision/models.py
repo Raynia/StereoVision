@@ -8,7 +8,6 @@ class Userdata(models.Model):
     user_height = models.PositiveIntegerField(null=False, default=960)
 
 class TargetImage(models.Model):
-    target_bytes = models.BinaryField(null=False)
     target_image = models.ImageField()
     target_point_x1 = models.IntegerField(null=None)
     target_point_y1 = models.IntegerField(null=None)
