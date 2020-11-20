@@ -219,8 +219,10 @@ def border_selection(request):
 def distance_calculate():
     frames.DetectAndMatch()
     distance_list = frames.CalculateDistance()
+    border_points_list = frames.GetBorderPointsList()
     print(distance_list)
-    return 
+    print(border_points_list)
+    return
 
 # Load target list table
 def target_table_check(request):

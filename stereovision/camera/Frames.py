@@ -121,3 +121,6 @@ class Frames:
                 cv.putText(self.main_frame, str(distance), self.target_border_points_list[idx][index][0], cv.FONT_HERSHEY_SIMPLEX,2,(0,0,255),1)
             except:
                 pass
+    #
+    def GetBorderPointsList(self):
+        return self.target_border_points_list
