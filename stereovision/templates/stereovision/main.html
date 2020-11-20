@@ -255,18 +255,6 @@
 					$("index_clear_cancel_btn").removeAttr("disabled");
 				});
 
-				$("#index_clear_submit_btn").on("click", function(){
-					$.ajax({
-						url: "{% url 'stereovision:target_table_index_clear' %}",
-						type: "POST",
-						success: function(){
-							$("#table_check_btn").click();
-						}
-					});
-					return false;
-				});
-
-
 				//함수
 				function lower(a, b){
 					if(a<b) return a;
@@ -376,17 +364,14 @@
 		<div id="right_div" class="division">
 			<button id="table_check_btn">table check</button>		
 			<button id="coordinates_table_clear_btn">table clear</button><br>
-			<form id="target_table_index_clear" name="target_table_index_clear">
-			{% csrf_token %}
+
 			<table border="1" style="text-align: center;"id="target_table">
 			<thead id="target_table_head">
 			<tr> <th>id</th> <th>distance</th> <th>checkbox</th> </tr>
 			</thead>
 			<tbody id="target_table_body"></tbody>
 			</table>
-			<input type="submit" id="index_clear_submit_btn" name="index_clear_submit_btn" value="Delete Target" >
-			<input type="submit" id="index_clear_cancel_btn" name="index_clear_cancel_btn" value="Cancel" disabled="disabled">
-			</form>
+
 		</div>
 		<input id="resolution_width" value="{{userdata_list.user_width}}"/>
 		<input id="resolution_height" value="{{userdata_list.user_height}}"/>

@@ -265,7 +265,3 @@ def target_table_all_clear(request):
     frames.AllDeleteTarget()
 
     return HttpResponse(json.dumps({"dumy": "dumy",}), content_type="application/json")
-
-def target_table_index_clear(request):    
-
-    return HttpResponse(json.dumps({"dumy": "dumy",}), content_type="application/json")
