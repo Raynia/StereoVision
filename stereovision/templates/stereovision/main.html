@@ -100,6 +100,7 @@
 						canvas_clear("midLeft_canvas_temp");
 						draw("midLeft_canvas_temp",cameraX_from_temp,cameraY_from_temp,cameraX_to_temp,cameraY_to_temp,"red");
 						console.log("to 		"+cameraX_to_temp+", "+cameraY_to_temp);
+						setPost(camera_selection, cameraX_from_temp, cameraY_from_temp, cameraX_to_temp, cameraY_to_temp);
 					}
 				});
 				$("#midLeft_div").mouseleave(function(){
@@ -134,6 +135,7 @@
 						ready_to_area_commit="on";
 						draw("midRight_canvas_temp",cameraX_from_temp,cameraY_from_temp,cameraX_to_temp,cameraY_to_temp,"red");
 						console.log("to 		"+cameraX_to_temp+", "+cameraY_to_temp);
+						setPost(camera_selection, cameraX_from_temp, cameraY_from_temp, cameraX_to_temp, cameraY_to_temp);
 					}
 				});
 				$("#midRight_div").mouseleave(function(event){
@@ -190,24 +192,20 @@
 						canvas_clear("midRight_canvas_temp");
 						draw_all();
 						ready_to_area_commit="off";
-						setPost(camera_selection, cameraX_from_temp, cameraY_from_temp, cameraX_to_temp, cameraY_to_temp);
+						var d = $(this).serialize();
+
+        				$.ajax({
+            				url: "{% url 'stereovision:border_selection' %}",
+            				type: "POST",
+            				data: d,
+							success:function(result){
+								$("#distance").attr("value", result.distance)
+							}
+        				});
 					}
-				});
-				$("#calc").on("submit", function(){
-        			var d = $(this).serialize();
-
-        			$.ajax({
-            			url: "{% url 'stereovision:border_selection' %}",
-            			type: "POST",
-            			data: d,
-						success:function(result){
-							$("#distance").attr("value", result.distance)
-						}
-        			});
-
 					return false;
+				});
 					
-   				});
 				//함수
 				function lower(a, b){
 					if(a<b) return a;
@@ -267,8 +265,7 @@
 				<button id="camera_setting_btn">camera setting</button> <br>
 			</div>
 			<div id="area_commit_div">
-				<button id="area_commit_button">area commit</button>
-				<form action="{% url 'stereovision:border_selection' %}", method="POST" id="calc" name="calc">
+				<form action="{% url 'stereovision:border_selection' %}", method="POST" id="area_commit_button" name="area_commit_button">
 				{% csrf_token %}
 				<label for="camera_pos"> pos: </label>
 				<input type="text", name="camera_pos", id="camera_pos", value="0"><br>
@@ -280,7 +277,7 @@
 				<input type="number", name="x2", id="x2", value="0"><br>
 				<label for="y2"> y2: </label>
 				<input type="number", name="y2", id="y2", value="0"><br>
-				<input type="submit", value="commit"><br>
+				<input type="submit", value="area commit"><br>
 				</form>
 			</div>
 			<div id="mode_change_btn_div">
