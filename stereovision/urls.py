@@ -15,6 +15,8 @@ urlpatterns = [
     path('setting/', views.setting, name="setting"),
     path('main/setting/', views.setting, name="setting"),
     path('border_selection/', views.border_selection, name="border_selection"),
+    path('target_table_check/', views.target_table_check, name="target_table_check"),
+    path('target_table_delete/', views.target_table_delete, name="target_table_delete"),
 
     #Streaming Path
     path('video_left', views.video_left, name='video_left'),

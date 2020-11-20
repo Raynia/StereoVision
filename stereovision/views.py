@@ -1,19 +1,20 @@
-import cv2
-import numpy as np
 import json
 
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponse, StreamingHttpResponse, JsonResponse
-from django.urls import reverse
-from django.views import generic
-from django.utils import timezone
+import cv2
+import numpy as np
 from django.conf import settings
+from django.forms.models import model_to_dict
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, StreamingHttpResponse
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
+from django.utils import timezone
+from django.views import generic
+from django.core import serializers
 
-from .camera import StereoCamera as sc
-from .camera import PixelCalculator as pc
 from .camera import Frames
-
-from .models import TargetImage, Userdata, CameraList, PreviewCamera
+from .camera import PixelCalculator as pc
+from .camera import StereoCamera as sc
+from .models import CameraList, PreviewCamera, TargetImage, Userdata
 
 pixelCalculator = pc.PixelCalculator((1280,960), 200, 80)
 stereoCamera = sc.StereoCamera()
@@ -77,15 +78,8 @@ def main(request):
     else:
         userdata_list = None
 
-    if TargetImage.objects.all().exists():
-        target_list = TargetImage.objects.all()
-
-    else:
-        target_list = None
-
     contents = {
         'userdata_list': userdata_list,
-        'target_list': target_list,
     }
 
     stereoCamera.ReleaseOtherCamera(userdata_list.user_left_camera, userdata_list.user_right_camera)
@@ -219,20 +213,32 @@ def border_selection(request):
     distance = str(t.id)
     distance_calculate()
     return HttpResponse(json.dumps({
-        "distance": distance
+        "distance": distance,
         }), content_type="application/json")
-  
-
 
 def distance_calculate():
     frames.DetectAndMatch()
     distance_list = frames.CalculateDistance()
     print(distance_list)
-    return
+    return 
 
 # Load target list table
-def open_target_list(request):
-    return None #return target_list page
+def target_table_check(request):
+    if TargetImage.objects.all().exists():
+        target_table = TargetImage.objects.all()
+        target_table = list(target_table.values())
+
+        return HttpResponse(target_table, content_type="application/json")
+    
+    else:
+        return HttpResponse(json.dumps({"target_table": "None of the data",}), content_type="application/json")
+
+def target_table_delete(request):
+    t = TargetImage.objects.all()
+    if t.exists():
+        t.delete()
+
+    return HttpResponse(json.dumps({"dumy": "dumy",}), content_type="application/json")
 
 # Capture Image
 def image_capture(request):

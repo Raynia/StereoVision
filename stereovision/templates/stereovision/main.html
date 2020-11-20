@@ -4,7 +4,7 @@
 <html lang="en">
 	<head>
 		<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
-		<mata charset="UTF-8"/>
+		<meta charset="UTF-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 		<meta http-equiv="X-UA-Compatible" content="ie=edge"/>
 		<link rel="stylesheet" href="{% static 'stereovision/main.css' %}?after">
@@ -22,6 +22,7 @@
 			var timer=0;
 			var color_table=["#FE9A2E","#FFFF00","#BFFF00","#01DF01","#00FFFF","#0101DF","#7401DF","#FE2EF7","#848484","#000000"];
 			var color_index=0;
+			
 			$(function(){
 				var resolution_w = $("#resolution_width").val()
 				var resolution_h = $("#resolution_height").val()
@@ -162,12 +163,17 @@
 						mode="camera_selection";
 						$(this).text("area_selection");
 						console.log(mode);
+						setPost("", 0, 0, 0, 0);
 					}
 				});//모드 선택 버튼 끝
 				$("#coordinates_table_clear_btn").on("click",function(){//전체 삭제 버튼
 					coordinates_table=[];
 					canvas_clear("midLeft_canvas");
 					canvas_clear("midRight_canvas");
+
+					$.ajax({
+            			url: "{% url 'stereovision:target_table_delete' %}",					
+					});
 				});
 				$("#camera_setting_btn").on("click",function(){
 					if (confirm("카메라 설정 페이지로 이동합니다.")==true){//확인
@@ -180,6 +186,11 @@
 					for(var i=0;i<coordinates_table.length;i++){
 						console.log(coordinates_table[i][0]+" "+coordinates_table[i][1]+" "+coordinates_table[i][2]+" "+coordinates_table[i][3]+" "+coordinates_table[i][4]);
 					}
+					$.ajax({
+            			url: "{% url 'stereovision:target_table_check' %}",
+						success: function(result){alert(result.target_table)},					
+						fail: function(){alert("fail")}						
+					});
 				});
 				$("#area_commit_button").on("click",function(){
 					if(ready_to_area_commit=="off"){
@@ -203,10 +214,26 @@
 							}
         				});
 					}
+					setPost("", 0, 0, 0, 0);
 					return false;
 				});
 					
 				//함수
+				function getCookie(name) {
+    				var cookieValue = null;
+    				if (document.cookie && document.cookie !== '') {
+        				var cookies = document.cookie.split(';');
+        				for (var i = 0; i < cookies.length; i++) {
+           					var cookie = cookies[i].trim();
+            				// Does this cookie string begin with the name we want?
+            				if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                				cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                				break;
+            				}
+        				}
+    				}
+    				return cookieValue;
+				}
 				function lower(a, b){
 					if(a<b) return a;
 					else return b;
@@ -256,6 +283,8 @@
 					document.getElementById("x2").setAttribute("value", xx2);
 					document.getElementById("y2").setAttribute("value", yy2);
 				}
+				var csrftoken = getCookie('csrftoken')
+
 			});
 		</script>
 	</head>
@@ -268,7 +297,7 @@
 				<form action="{% url 'stereovision:border_selection' %}", method="POST" id="area_commit_button" name="area_commit_button">
 				{% csrf_token %}
 				<label for="camera_pos"> pos: </label>
-				<input type="text", name="camera_pos", id="camera_pos", value="0"><br>
+				<input type="text", name="camera_pos", id="camera_pos", value=""><br>
 				<label for="x1"> x1: </label>
 				<input type="number", name="x1", id="x1", value="0"><br>
 				<label for="y1"> y1: </label>
@@ -302,8 +331,8 @@
 		</div>
 		<div id="right_div" class="division">
 
-			<button id="coordinates_table_clear_btn">table clear</button>
-			<button id="table_check_btn">table check</button><br>			
+			<button id="table_check_btn">table check</button>		
+			<button id="coordinates_table_clear_btn">table clear</button><br>
 			
 			{% if target_list %}
 			{% for target in target_list %}
