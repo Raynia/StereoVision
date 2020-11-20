@@ -281,6 +281,7 @@
 				<button id="camera_setting_btn">camera setting</button> <br>
 			</div>
 			<div id="area_commit_div">
+			<span>
 				<form id="area_commit_button" name="area_commit_button">
 				{% csrf_token %}
 				<label for="camera_pos"> pos: </label>
@@ -295,6 +296,7 @@
 				<input type="number", name="y2", id="y2", value="0"><br>
 				<input type="submit", value="area commit"><br>
 				</form>
+			</span>
 			</div>
 			<div id="mode_change_btn_div">
 				<button id="mode_change_btn">area selection</button>
@@ -321,8 +323,10 @@
 			<button id="table_check_btn">table check</button>		
 			<button id="coordinates_table_clear_btn">table clear</button><br>
 			
-			<label for="calc_distance"> distance: </label>
-			<input type="number", name="calc_distance", id="calc_distance", value="0" disabled="disabled"><br>
+			<form id="target_list" name="target_list">
+				
+				<label for="calc_distance"> distance: </label>
+				<input type="number", name="calc_distance", id="calc_distance", value="0" disabled="disabled"><br>
 		</div>
 		<input id="resolution_width" value="{{userdata_list.user_width}}"/>
 		<input id="resolution_height" value="{{userdata_list.user_height}}"/>

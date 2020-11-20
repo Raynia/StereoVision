@@ -230,7 +230,12 @@ def target_table_check(request):
         target_table = TargetImage.objects.all()
         target_table = list(target_table.values())
 
+        distance_list = frames.GetTargetDistanceList()
+        border_points_list = frames.GetBorderPointsList()
+
         print(target_table)
+        print(distance_list)
+        print(border_points_list)
         return HttpResponse(json.dumps(target_table), content_type="application/json")
     
     else:
@@ -242,28 +247,3 @@ def target_table_delete(request):
         t.delete()
 
     return HttpResponse(json.dumps({"dumy": "dumy",}), content_type="application/json")
-
-# Capture Image
-def image_capture(request):
-    return HttpResponseRedirect(reverse('stereovision:main'))
-
-# Reverse Camera
-def camera_reverse(request):
-    return HttpResponseRedirect(reverse('stereovision:main'))
-
-
-# Function Test View
-######################################################################
-def left(request):
-    return HttpResponse("This is left camera page")
-
-def right(request):
-    return HttpResponse("This is right camera page")
-
-def sshot(request):
-    return HttpResponse("This is screenshot page")
-
-def userdata_delete(request):
-    q = Userdata.objects.first()
-    q.delete()
-    return HttpResponseRedirect(reverse('stereovision:test_temp'))
