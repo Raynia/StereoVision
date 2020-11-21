@@ -15,6 +15,7 @@ from django.core import serializers
 from .camera import Frames
 from .camera import PixelCalculator as pc
 from .camera import StereoCamera as sc
+from .camera import AdditionalFunction as af
 from .models import CameraList, PreviewCamera, TargetImage, Userdata
 
 pixelCalculator = pc.PixelCalculator((1280,960), 200, 80)
@@ -191,16 +192,18 @@ def border_selection(request):
     x1, y1 = int(request.POST['x1']), int(request.POST['y1']) # start point
     x2, y2 = int(request.POST['x2']), int(request.POST['y2']) # destination point
 
+    align = af.SortTopBottomPoint((x1,y1),(x2,y2))
+
     lr = 0 if camera_pos == "left" else 1
     frame = stereoCamera.GetLRFrame(lr)   
     ori_frame = stereoCamera.GetBothFrame()
     
-    frames.StoreFrame(ori_frame[0],ori_frame[1])
-    frames.AddTarget(ori_frame[0][y1:y2,x1:x2])
+    # frames.StoreFrame(ori_frame[0],ori_frame[1])
+    frames.AddTarget(ori_frame[0][align[0][1]:align[1][1],align[0][0]:align[1][0]])
     image = np.asarray(bytearray(frame), dtype="uint8")
     image_encode = cv2.imdecode(image, cv2.IMREAD_COLOR)   
     
-    q = TargetImage(target_point_x1 = x1, target_point_y1 = y1, target_point_x2 = x2, target_point_y2 = y2)
+    q = TargetImage(target_point_x1 = align[0][0], target_point_y1 = align[0][1], target_point_x2 = align[1][0], target_point_y2 = align[1][1])
     q.save()
 
     image_name = ".jpg"
@@ -212,12 +215,15 @@ def border_selection(request):
     t.save()
 
     distance = str(t.id)
-    distance_calculate()
+    # distance_calculate()
     return HttpResponse(json.dumps({
         "distance": distance,
         }), content_type="application/json")
 
 def distance_calculate():
+    ori_frame = stereoCamera.GetBothFrame()
+    
+    frames.StoreFrame(ori_frame[0],ori_frame[1])
     frames.DetectAndMatch()
     distance_list = frames.CalculateDistance()
     border_points_list = frames.GetBorderPointsList()
@@ -226,12 +232,15 @@ def distance_calculate():
     return
 
 # Load target list table
-def target_table_check(request):    
+def target_table_check(request):
+    ori_frame = stereoCamera.GetBothFrame()
     
-    distance_list = frames.GetTargetDistanceList()
+    frames.StoreFrame(ori_frame[0],ori_frame[1])    
+    frames.DetectAndMatch()
+    distance_list = frames.CalculateDistance()
     border_points_list = frames.GetBorderPointsList()
     target_table = []
-
+    # print(TargetImage.objects.count(),' = ',len(distance_list))
     if TargetImage.objects.all().exists() and TargetImage.objects.count() == len(distance_list):
         target_list = TargetImage.objects.all()
         target_list = list(target_list.values())
@@ -249,13 +258,13 @@ def target_table_check(request):
                 'right_y2': val[1][1][1],
             }
             target_table.append(target_table_dict)
-        print(target_table)
-    
+        # print(target_table)
+        # print(distance_list)
         return HttpResponse(json.dumps(target_table), content_type="application/json")   
 
     else:        
-        print(TargetImage.objects.all())
-        print(distance_list)
+        # print(TargetImage.objects.all())
+        # print(distance_list)
         return HttpResponse(json.dumps({"flag":"empty", "text": "Empty table or Please clear the table",}), content_type="application/json")
 
 def target_table_all_clear(request):

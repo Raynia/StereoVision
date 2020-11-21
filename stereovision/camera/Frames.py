@@ -22,8 +22,8 @@ class Frames:
     def StoreFrame(self, left, right):
         self.left_frame = left
         self.right_frame = right
-        self.left_gray = cv.cvtColor(self.left_frame, cv.COLOR_BGR2GRAY)
-        self.right_gray = cv.cvtColor(self.right_frame, cv.COLOR_BGR2GRAY)
+        self.left_gray = cv.cvtColor(left, cv.COLOR_BGR2GRAY)
+        self.right_gray = cv.cvtColor(right, cv.COLOR_BGR2GRAY)
 
     #
     def SelectMainFrame(self, index):
@@ -92,23 +92,25 @@ class Frames:
     #
     def DetectAndMatch(self):
         self.target_border_points_list.clear()
+        self.target_feature_points_list.clear()
         for ele in self.target_image_list:
             self.target_border_points_list.append(ele.DetectingFeaturePoint(self.left_gray, self.right_gray))
             self.target_feature_points_list.append(ele.MatchingFeaturePoint())
 
     #
     def CalculateDistance(self):
+        self.target_distance_list.clear()
         if self.target_feature_points_list:
             for ele in self.target_feature_points_list:
                 temp_list = []
                 for index, point in enumerate(ele[0]):
                     temp_list.append(self.pixel_calculator.DistanceCalc(point.pt, ele[1][index].pt))
                     # print(self.pixel_calculator.DistanceCalc(point.pt, ele[1][index].pt))
-            try:
-                self.target_distance_list.append(sum(temp_list) // len(temp_list))
-            except:
-                print("err")
-                self.target_distance_list.append(0)
+                try:
+                    self.target_distance_list.append(sum(temp_list) // len(temp_list))
+                except:
+                    print("err")
+                    self.target_distance_list.append(0)
         return self.target_distance_list
 
     #
