@@ -182,6 +182,7 @@
 						success: function(){
 							$("#table_check_btn").click();
 							stopAutoTargetTableRefresh();
+							color_index = 0;
 						}				
 					});
 				});
@@ -207,14 +208,22 @@
 								html += "</tr>";
 							}
 							else{
+								var result_index = 0;
+
 								for (key in result){
 									html += "<tr>";
-									html += "<td>" + "<a href='/media/"+ result[key].id + ".jpg'>" + result[key].id + "</a> </td>";
+									html += "<td style='background-color: " + color_table[key] + ";'>"  + " </td>";
 									html += "<td>" + result[key].distance + "</td>";
 									html += "<td>" + "<input type='checkbox' name='target_index' value='" + result[key].id + "'>" + "</td>";
-									html += "</tr>";									
-								}							
-							}					
+									html += "</tr>";
+									coordinates_table[key][1] = result[key].left_x1;								
+									coordinates_table[key][2] = result[key].left_y1;								
+									coordinates_table[key][3] = result[key].left_x2;								
+									coordinates_table[key][4] = result[key].left_y2;							
+								}
+								draw_all();
+							}		
+
 							$("#target_table_body").empty();
 							$("#target_table_body").append(html);
 						},					
@@ -226,13 +235,7 @@
 					if(ready_to_area_commit=="off"){
 						alert("범위를 지정해야 합니다.");
 					}else{
-						coordinates_table.push([selected_canvas,cameraX_from_temp,cameraY_from_temp,cameraX_to_temp,cameraY_to_temp,color_table[color_index]]);
-						color_index++;
-						if(color_index==10) color_index=0;
-						canvas_clear("midLeft_canvas_temp");
-						canvas_clear("midRight_canvas_temp");
-						draw_all();
-						ready_to_area_commit="off";
+
 						var d = $(this).serialize();
 
         				$.ajax({
@@ -240,12 +243,18 @@
             				type: "POST",
             				data: d,
 							success:function(result){
+								coordinates_table.push([selected_canvas,cameraX_from_temp,cameraY_from_temp,cameraX_to_temp,cameraY_to_temp,color_table[color_index]]);
 								$("#calc_distance").attr("value", result.distance)
 								$("#table_check_btn").click();
+								color_index++;
 								if(!table_refresh_flag){
 									startAutoTargetTableRefresh();
 								}
-
+								if(color_index==10) color_index=0;
+								canvas_clear("midLeft_canvas_temp");
+								canvas_clear("midRight_canvas_temp");
+								draw_all();
+								ready_to_area_commit="off";
 							}
         				});
 					}
@@ -282,8 +291,8 @@
 				function draw_all(){
 					canvas_clear("midLeft_canvas");
 					canvas_clear("midRight_canvas");
-					for(var i=0;i<coordinates_table.length;i++){
-						draw(coordinates_table[i][0],coordinates_table[i][1],coordinates_table[i][2],coordinates_table[i][3],coordinates_table[i][4],coordinates_table[i][5]);
+					for(var i=0; i<coordinates_table.length; i++){
+						draw(coordinates_table[i][0], coordinates_table[i][1] ,coordinates_table[i][2],coordinates_table[i][3],coordinates_table[i][4],coordinates_table[i][5]);
 					}
 				}
 				function Drag(canvas, X_from, Y_from){
