@@ -22,9 +22,11 @@
 			var timer=0;
 			var color_table=["#FE9A2E","#FFFF00","#BFFF00","#01DF01","#00FFFF","#0101DF","#7401DF","#FE2EF7","#848484","#000000"];
 			var color_index=0;
-			var table_enabled_flag=false;
-			var table_checked_flag=false;
-			var refresh_flag = null;
+
+			//Target Table Interval 변수
+			var table_refresh_flag = false;
+			var table_refresh = null;
+			var table_refresh_time = 1000;
 			
 
 			$(function(){
@@ -178,7 +180,8 @@
 					$.ajax({
             			url: "{% url 'stereovision:target_table_all_clear' %}",
 						success: function(){
-							$("#table_check_btn").click()
+							$("#table_check_btn").click();
+							stopAutoTargetTableRefresh();
 						}				
 					});
 				});
@@ -202,7 +205,6 @@
 								html += "<tr>";
 								html += "<td colspan='3'> Empty Table<br>" + result.text + "</td>";
 								html += "</tr>";
-								table_enabled_flag = false;
 							}
 							else{
 								for (key in result){
@@ -210,14 +212,11 @@
 									html += "<td>" + "<a href='/media/"+ result[key].id + ".jpg'>" + result[key].id + "</a> </td>";
 									html += "<td>" + result[key].distance + "</td>";
 									html += "<td>" + "<input type='checkbox' name='target_index' value='" + result[key].id + "'>" + "</td>";
-									html += "</tr>";
-									table_enabled_flag = true;
-									console.log(table_enabled_flag)
+									html += "</tr>";									
 								}							
 							}					
 							$("#target_table_body").empty();
 							$("#target_table_body").append(html);
-							
 						},					
 					});
 					console.log("test")
@@ -243,17 +242,16 @@
 							success:function(result){
 								$("#calc_distance").attr("value", result.distance)
 								$("#table_check_btn").click();
+								if(!table_refresh_flag){
+									startAutoTargetTableRefresh();
+								}
+
 							}
         				});
 					}
 					setPost("", 0, 0, 0, 0);
 					return false;
-				});		
-				
-				$("#target_index").on("click",function(){
-					console.log("test")
-					$("index_clear_cancel_btn").removeAttr("disabled");
-				});
+				});						
 
 				//함수
 				function lower(a, b){
@@ -306,12 +304,20 @@
 					document.getElementById("y2").setAttribute("value", yy2);
 				}
 
-				function startAutoTargetTableRefresh(){
-									
+				function autoRefreshInterval(){
+					document.getElementById("table_check_btn").click()
 				}
 
-				function stopAutoTargetTAbleRefresh(){
+				function startAutoTargetTableRefresh(){
+					table_refresh = setInterval(autoRefreshInterval, table_refresh_time)
+					table_refresh_flag = true;
+				}
 
+				function stopAutoTargetTableRefresh(){
+					if(!table_refresh != null){
+						clearInterval(table_refresh);
+					}
+					table_refresh_flag = false;
 				}
 
 			});

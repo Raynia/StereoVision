@@ -170,8 +170,8 @@ def userdata_update(request):
     height = int(width) // 4 * 3
     distance = int(request.POST['distance'])
 
-    #stereoCamera.AddSettingList('Resolution',(width, height))
-    #pixelCalculator.SettingCamera((width, height), distance, 80)
+    stereoCamera.AddSettingList('Resolution',(width, height))
+    pixelCalculator.SettingCamera((width, height), distance, 80)
 
     stereoCamera.pre_flag = False
 
