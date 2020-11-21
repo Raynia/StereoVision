@@ -7,53 +7,57 @@
 		<mata charset="UTF-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 		<meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-		<link rel="stylesheet" href="{% static 'stereovision/setting.css' %}?after">
+		<link rel="stylesheet" href="{% static 'stereovision/setting.css' %}">
 		<script defer type="text/javascript" src="{% static 'stereovision/setting.js' %}"></script>	
 	<title>setting page</title>
 	</head>
 	<body>
-		<form method="POST">
-			{% csrf_token %}
-			<label for="resolution">Right Camera: </label>
-    		<select name="resolution">
-        		<option value="1280">1280x960</option>
-        		<option value="2592">2592x1944</option>
-   			</select>
-   			<br>
-			<label for="distance">Distance(mm): </label>
-   			<input type="number" name="distance" id="distance" value="100">
-   			<br>
-			<label for="left">Left Camera: {{ preview.0.camera_left}}</label>
-    		<select id="left_camera" name="left_camera">
-				{% for cam in list %}
-					{% if cam.camera_index == preview.0.camera_left %}
-					   	<option selected value="{{cam.camera_index}}">{{cam}}</option>
-					{% else %}
-						<option value="{{cam.camera_index}}">{{cam}}</option>	
-					{% endif %}
-				{% endfor %}
-    	
-    		</select>
-    		<br>
-    		<label for="right">Right Camera: {{ preview.0.camera_right }}</label>
-    		<select id="right_camera" name="right_camera">
-				{% for cam in list %}
-					{% if cam.camera_index == preview.0.camera_right %}
-				   		<option selected value="{{cam.camera_index}}">{{cam}}</option>
-				   	{% else %}
-						<option value="{{cam.camera_index}}">{{cam}}</option>
-				   	{% endif %}
-				{% endfor %}
-   			</select>
-			<br>
-			<input type="submit" hidden name="preview" value="Preview Cam" formaction="{% url 'stereovision:camera_preview' %}">
-			<input type="submit" value="Setting Update" formaction="{% url 'stereovision:userdata_update' %}">
-		</form>
-		<div>
-			<img src="{% url 'stereovision:pre_video_left' %}">
-		</div>
-		<div>
-			<img src="{% url 'stereovision:pre_video_right' %}">
+		<div id='setting'>
+			<form method="POST">
+				{% csrf_token %}
+				<label for="resolution">Right Camera: </label>
+				<select name="resolution">
+					<option value="1280">1280x960</option>
+					<option value="2592">2592x1944</option>
+				</select>
+				<br>
+				<label for="distance">Distance(mm): </label>
+				<input type="number" name="distance" id="distance" value="200">
+				<br>
+				<label for="left">Left Camera: {{ preview.0.camera_left}}</label>
+				<select id="left_camera" name="left_camera">
+					{% for cam in list %}
+						{% if cam.camera_index == preview.0.camera_left %}
+							<option selected value="{{cam.camera_index}}">{{cam}}</option>
+						{% else %}
+							<option value="{{cam.camera_index}}">{{cam}}</option>	
+						{% endif %}
+					{% endfor %}
+			
+				</select>
+				<label for="right">Right Camera: {{ preview.0.camera_right }}</label>
+				<select id="right_camera" name="right_camera">
+					{% for cam in list %}
+						{% if cam.camera_index == preview.0.camera_right %}
+							<option selected value="{{cam.camera_index}}">{{cam}}</option>
+						{% else %}
+							<option value="{{cam.camera_index}}">{{cam}}</option>
+						{% endif %}
+					{% endfor %}
+				</select>
+				<br>
+				
+				<div id='preview_div'>
+					<div>
+						<img class="preview_cam" src="{% url 'stereovision:pre_video_left' %}">
+					</div>
+					<div>
+						<img class="preview_cam" src="{% url 'stereovision:pre_video_right' %}">
+					</div>
+				</div>
+				<input type="submit" hidden name="preview" value="Preview Cam" formaction="{% url 'stereovision:camera_preview' %}">
+				<input type="submit" value="Setting Update" formaction="{% url 'stereovision:userdata_update' %}">
+			</form>
 		</div>
 	</body>
 </html>

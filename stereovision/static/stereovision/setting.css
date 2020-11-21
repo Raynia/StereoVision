@@ -1,0 +1,17 @@
+img.preview_cam {
+    width: 640px;
+    height: 480px;
+    margin: 5px;
+}
+
+#setting {
+    border: 3px black solid;
+    display: flex;
+    padding: 5% 10%;
+}
+
+#preview_div {
+    display: flex;
+    flex-direction: row;
+    padding: 20px;
+}
