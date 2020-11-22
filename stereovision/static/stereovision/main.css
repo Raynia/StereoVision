@@ -2,6 +2,35 @@ body {
     font-family: "malgun gothic" ,serif;
 }
 
+.division{
+    border : 1px solid black;
+}
+
+#top_div{
+    width : 400px;
+    height : 250px;
+    position : absolute;
+    top : 0px;
+    left : 1600px;
+}
+        #mode_change_btn_div{
+            position : absolute;
+            top : 200px;
+            left : 0px;
+            text-align : center;
+        }
+        #camera_setting_div{
+            position : absolute;
+            top : 175px;
+            left : 0px;
+            text-align : center;   
+        }
+        #area_commit_btn{
+            position : absolute;
+            top : 100px;
+            left : 0px;
+            text-align : center;
+        }
 #left_div{
     width : 0px;
     height : 0px;
@@ -11,47 +40,47 @@ body {
 }
 
 #mid_div{
-    width : 1280px;
-    height : 960px;
+    width : 1600px;
+    height : 1200px;
     position : absolute;
     top : 0px;
     left : 0px;
 }
         /*왼쪽*/
         #midLeft_div{
-            width : 640px;
-            height : 480px;
+            width : 800px;
+            height : 600px;
             position : absolute;
             top : 0px;
             left : 0px;
             background-color : #FFB6C1;
         }
         #midLeft_canvas{
-            width : 1280px;
-            height : 960px;
+            width : 1600px;
+            height : 1200px;
             position : absolute;
             top : 0px;
             left : 0px;
             visibility : hidden; 
         }
         #midLeft_image{
-            width : 640px;
-            height : 480px;
+            width : 800px;
+            height : 600px;
             position : absolute;
             top : 0px;
             left : 0px;  
         }
         #midLeft_canvas_temp{
-             width : 1280px;
-            height : 960px;
+            width : 1600px;
+            height : 1200px;
             position : absolute;
             top : 0px;
             left : 0px;
             visibility : hidden; 
         }
         #midLeft_canvas_preview{
-            width : 640px;
-            height : 480px;
+            width : 800px;
+            height : 600px;
             position : absolute;
             top : 0px;
             left : 0px;
@@ -59,47 +88,48 @@ body {
 
         /*오른쪽*/
         #midRight_div{
-            width : 640px;
-            height : 480px;
+            width : 800px;
+            height : 600px;
             position : absolute;
             top : 0px;
-            left : 640px;
+            left : 800px;
             background-color : #8A2BE2;
         }
         #midRight_canvas{
-            width : 1280px;
-            height : 960px;
+            width : 1600px;
+            height : 1200px;
             position : absolute;
             top : 0px;
             left : 0px;
             visibility : hidden; 
         }
         #midRight_image{
-            width : 640px;
-            height : 480px;
+            width : 800px;
+            height : 600px;
             position : absolute;
             top : 0px;
             left : 0px;  
         }
         #midRight_canvas_temp{
-            width : 1280px;
-            height : 960px;
+            width : 1600px;
+            height : 1200px;
             position : absolute;
             top : 0px;
             left : 0px;
             visibility : hidden; 
         }
         #midRight_canvas_preview{
-            width : 640px;
-            height : 480px;
+            width : 800px;
+            height : 600px;
             position : absolute;
             top : 0px;
             left : 0px;
         }
 #right_div{
     width : 400px;
-    height : 960px;
+    height : 1000px;
     position : absolute;
+<<<<<<< HEAD
     left : 1300px;
     top : 0px;
 }
@@ -132,3 +162,8 @@ body {
         top : 250px;
         left : 0px;
     }
+=======
+    top : 250px;
+    left : 1600px;
+}
+>>>>>>> parent of f12e22e... UI 수정
