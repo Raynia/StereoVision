@@ -199,7 +199,10 @@ def border_selection(request):
     ori_frame = stereoCamera.GetBothFrame()
     
     # frames.StoreFrame(ori_frame[0],ori_frame[1])
-    frames.AddTarget(ori_frame[0][align[0][1]:align[1][1],align[0][0]:align[1][0]])
+    if lr == 0:
+        frames.AddTarget(ori_frame[0][align[0][1]:align[1][1],align[0][0]:align[1][0]])
+    else:
+        frames.AddTarget(ori_frame[1][align[0][1]:align[1][1],align[0][0]:align[1][0]])
     image = np.asarray(bytearray(frame), dtype="uint8")
     image_encode = cv2.imdecode(image, cv2.IMREAD_COLOR)   
     
