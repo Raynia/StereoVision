@@ -22,6 +22,10 @@
 			var timer=0;
 			var color_table=["#FE9A2E","#FFFF00","#BFFF00","#01DF01","#00FFFF","#0101DF","#7401DF","#FE2EF7","#848484","#000000"];
 			var color_index=0;
+			var view_width_preview=640;
+			var view_width=1280;
+			var view_height_preview=480;
+			var view_height=960;
 
 			var coordinates_table = new Array();
 			var coordinates_table_mirror = new Array();
@@ -29,7 +33,7 @@
 			//Target Table Interval 변수
 			var table_refresh_flag = false;
 			var table_refresh = null;
-			var table_refresh_time = 1000;
+			var table_refresh_time = 250;
 			
 
 			$(function(){
@@ -42,9 +46,9 @@
 						camera_selection="none";
 						selected_canvas="none";
 						ready_to_area_commit="off";
-						$("#midLeft_div").css("width","800px").css("height","600px").css("position","absolute").css("left","0px").css("visibility","visible");
-						$("#midRight_div").css("width","800px").css("height","600px").css("position","absolute").css("left","800px").css("visibility","visible");
-						$("#midLeft_image").css("width","800px").css("height","600px").css("position","absolute").css("left","0px");
+						$("#midLeft_div").css("width",view_width_preview+"px").css("height",view_height_preview+"px").css("position","absolute").css("left","0px").css("visibility","visible");
+						$("#midRight_div").css("width",view_width_preview+"px").css("height",view_height_preview+"px").css("position","absolute").css("left",view_width_preview+"px").css("visibility","visible");
+						$("#midLeft_image").css("width",view_width_preview+"px").css("height",view_height_preview+"px").css("position","absolute").css("left","0px");
 						$("#midLeft_canvas").css("visibility","hidden");
 						$("#midLeft_canvas_temp").css("visibility","hidden");
 						$("#midRight_canvas_preview").css("visibility","visible");
@@ -53,8 +57,8 @@
 					}else if(camera_selection=="none"&&mode=="camera_selection"){
 						camera_selection="left";
 						selected_canvas="midLeft_canvas";
-						$("#midLeft_div").css("width","1600px").css("height","1200px").css("position","absolute").css("left","0px");
-						$("#midLeft_image").css("width","1600px").css("height","1200px").css("position","absolute");
+						$("#midLeft_div").css("width",view_width+"px").css("height",view_height+"px").css("position","absolute").css("left","0px");
+						$("#midLeft_image").css("width",view_width+"px").css("height",view_height+"px").css("position","absolute");
 						$("#midRight_div").css("visibility","hidden");
 						$("#midLeft_canvas").css("visibility","visible");
 						$("#midLeft_canvas_temp").css("visibility","visible");
@@ -69,9 +73,9 @@
 						camera_selection="none";
 						selected_canvas="none";
 						ready_to_area_commit="off";
-						$("#midLeft_div").css("width","800px").css("height","600px").css("position","absolute").css("left","0px").css("visibility","visible");
-						$("#midRight_div").css("width","800px").css("height","600px").css("position","absolute").css("left","800px").css("visibility","visible");
-						$("#midRight_image").css("width","800px").css("height","600px").css("position","absolute").css("left","0px");
+						$("#midLeft_div").css("width",view_width_preview+"px").css("height",view_height_preview+"px").css("position","absolute").css("left","0px").css("visibility","visible");
+						$("#midRight_div").css("width",view_width_preview+"px").css("height",view_height_preview+"px").css("position","absolute").css("left",view_width_preview+"px").css("visibility","visible");
+						$("#midRight_image").css("width",view_width_preview+"px").css("height",view_height_preview+"px").css("position","absolute").css("left","0px");
 						$("#midRight_canvas").css("visibility","hidden");
 						$("#midLeft_canvas").css("visibility","hidden");
 						$("#midRight_canvas_temp").css("visibility","hidden");
@@ -81,8 +85,8 @@
 					}else if(camera_selection=="none"&&mode=="camera_selection"){
 						camera_selection="right";
 						selected_canvas="midRight_canvas"
-						$("#midRight_div").css("width","1600px").css("height","1200px").css("position","absolute").css("left","0px");
-						$("#midRight_image").css("width","1600px").css("height","1200px").css("position","absolute");
+						$("#midRight_div").css("width",view_width+"px").css("height",view_height+"px").css("position","absolute").css("left","0px");
+						$("#midRight_image").css("width",view_width+"px").css("height",view_height+"px").css("position","absolute");
 						$("#midLeft_div").css("visibility","hidden");
 						$("#midRight_canvas").css("visibility","visible");
 						$("#midRight_canvas_temp").css("visibility","visible");
@@ -224,26 +228,25 @@
 									html += "<tr>";
 									html += "<td style='background-color: " + color_table[key] + ";'>"  + " </td>";
 									html += "<td>" + result[key].distance + "</td>";
-									html += "<td>" + "<input type='checkbox' name='target_index' value='" + result[key].id + "'>" + "</td>";
 									html += "</tr>";
 									if(coordinates_table[key][0]=="midLeft_canvas"){
-										coordinates_table[key][1] = Math.floor(result[key].left_x1*1600.0/resolution_w);
-										coordinates_table[key][2] = Math.floor(result[key].left_y1*1200.0/resolution_h);
-										coordinates_table[key][3] = Math.floor(result[key].left_x2*1600.0/resolution_w);
-										coordinates_table[key][4] = Math.floor(result[key].left_y2*1200.0/resolution_h);
-										coordinates_table_mirror[key][1] = Math.floor(result[key].right_x1*1600.0/resolution_w);						
-										coordinates_table_mirror[key][2] = Math.floor(result[key].right_y1*1200.0/resolution_h);						
-										coordinates_table_mirror[key][3] = Math.floor(result[key].right_x2*1600.0/resolution_w);						
-										coordinates_table_mirror[key][4] = Math.floor(result[key].right_y2*1200.0/resolution_h);
+										coordinates_table[key][1] = Math.floor(result[key].left_x1*view_width/resolution_w);
+										coordinates_table[key][2] = Math.floor(result[key].left_y1*view_height/resolution_h);
+										coordinates_table[key][3] = Math.floor(result[key].left_x2*view_width/resolution_w);
+										coordinates_table[key][4] = Math.floor(result[key].left_y2*view_heigh/resolution_h);
+										coordinates_table_mirror[key][1] = Math.floor(result[key].right_x1*view_width/resolution_w);						
+										coordinates_table_mirror[key][2] = Math.floor(result[key].right_y1*view_heigh/resolution_h);						
+										coordinates_table_mirror[key][3] = Math.floor(result[key].right_x2*view_width/resolution_w);						
+										coordinates_table_mirror[key][4] = Math.floor(result[key].right_y2*view_heigh/resolution_h);
 									}else{
-										coordinates_table[key][1] = Math.floor(result[key].right_x1*1600.0/resolution_w);								
-										coordinates_table[key][2] = Math.floor(result[key].right_y1*1200.0/resolution_h);								
-										coordinates_table[key][3] = Math.floor(result[key].right_x2*1600.0/resolution_w);								
-										coordinates_table[key][4] = Math.floor(result[key].right_y2*1200.0/resolution_h);
-										coordinates_table_mirror[key][1] = Math.floor(result[key].left_x1*1600.0/resolution_w);						
-										coordinates_table_mirror[key][2] = Math.floor(result[key].left_y1*1200.0/resolution_h);						
-										coordinates_table_mirror[key][3] = Math.floor(result[key].left_x2*1600.0/resolution_w);						
-										coordinates_table_mirror[key][4] = Math.floor(result[key].left_y2*1200.0/resolution_h);
+										coordinates_table[key][1] = Math.floor(result[key].right_x1*view_width/resolution_w);								
+										coordinates_table[key][2] = Math.floor(result[key].right_y1*view_heigh/resolution_h);								
+										coordinates_table[key][3] = Math.floor(result[key].right_x2*view_width/resolution_w);								
+										coordinates_table[key][4] = Math.floor(result[key].right_y2*view_heigh/resolution_h);
+										coordinates_table_mirror[key][1] = Math.floor(result[key].left_x1*view_width/resolution_w);						
+										coordinates_table_mirror[key][2] = Math.floor(result[key].left_y1*view_heigh/resolution_h);						
+										coordinates_table_mirror[key][3] = Math.floor(result[key].left_x2*view_width/resolution_w);						
+										coordinates_table_mirror[key][4] = Math.floor(result[key].left_y2*view_heigh/resolution_h);
 									}					
 								}
 								draw_all();
@@ -342,10 +345,10 @@
 				}
 
 				function setPost(pos, x1, y1, x2, y2){
-					xx1 = Math.floor(x1 * resolution_w / 1600.0)
-					yy1 = Math.floor(y1 * resolution_h / 1200.0)
-					xx2 = Math.floor(x2 * resolution_w / 1600.0)
-					yy2 = Math.floor(y2 * resolution_h / 1200.0)
+					xx1 = Math.floor(x1 * resolution_w / view_width);
+					yy1 = Math.floor(y1 * resolution_h / view_heigh);
+					xx2 = Math.floor(x2 * resolution_w / view_width);
+					yy2 = Math.floor(y2 * resolution_h / view_heigh);
 					console.log(xx1,yy1,xx2,yy2)
 					document.getElementById("camera_pos").setAttribute("value", pos);
 					document.getElementById("x1").setAttribute("value", xx1);
@@ -375,61 +378,73 @@
 		</script>
 	</head>
 	<body>
-		<div id="top_div" class="division">
-			<div id="camera_setting_div">
-				<button id="camera_setting_btn">camera setting</button> <br>
-			</div>
-			<div id="area_commit_div">
-			<span>
-				<form id="area_commit_button" name="area_commit_button">
-				{% csrf_token %}
-				<label for="camera_pos"> pos: </label>
-				<input type="text", name="camera_pos", id="camera_pos", value=""><br>
-				<label for="x1"> x1: </label>
-				<input type="number", name="x1", id="x1", value="0"><br>
-				<label for="y1"> y1: </label>
-				<input type="number", name="y1", id="y1", value="0"><br>
-				<label for="x2"> x2: </label>
-				<input type="number", name="x2", id="x2", value="0"><br>
-				<label for="y2"> y2: </label>
-				<input type="number", name="y2", id="y2", value="0"><br>
-				<input type="submit", value="area commit"><br>
-				</form>
-			</span>
-			</div>
-			<div id="mode_change_btn_div">
-				<button id="mode_change_btn">area selection</button>
-			</div>
-
-		</div>
-		<div id="left_div" class="division">
-			
-		</div>
+		
 		<div id="mid_div" class="division">
 			<div id="midLeft_div" class="division">
 				<img id="midLeft_image" src="{% url 'stereovision:video_left' %}">
-				<canvas id="midLeft_canvas" width="1600" height="1200"></canvas>
-				<canvas id="midLeft_canvas_temp" width="1600" height="1200"></canvas>
-				<canvas id="midLeft_canvas_preview" width="800" height="600"></canvas>
+				<canvas id="midLeft_canvas" width="1280" height="960"></canvas>
+				<canvas id="midLeft_canvas_temp" width="1280" height="960"></canvas>
+				<canvas id="midLeft_canvas_preview" width="640" height="480"></canvas>
 			</div>
 			<div id="midRight_div" class="division">
 				<img id="midRight_image" src="{% url 'stereovision:video_right' %}">	
-				<canvas id="midRight_canvas" width="1600" height="1200"></canvas>
-				<canvas id="midRight_canvas_temp" width="1600" height="1200"></canvas>
-				<canvas id="midRight_canvas_preview" width="800" height="600"></canvas>
+				<canvas id="midRight_canvas" width="1280" height="960"></canvas>
+				<canvas id="midRight_canvas_temp" width="1280" height="960"></canvas>
+				<canvas id="midRight_canvas_preview" width="640" height="480"></canvas>
 			</div>
 		</div>
 		<div id="right_div" class="division">
-			<button id="table_check_btn">table check</button>		
-			<button id="coordinates_table_clear_btn">table clear</button><br>
+			<div id="rightTop_div" class="division">
+				<div id="area_commit_div">
+				<span>
+					<form id="area_commit_button" name="area_commit_button">
+					{% csrf_token %}
+					<table border="0">
+						<tr>
+							<td><label for="camera_pos"> pos:</label></td>
+							<td><input type="text", name="camera_pos", id="camera_pos", value=""></td>
+						</tr>
+						<tr>
+							<td><label for="x1"> x1 :</label>
+							<td><input type="number", name="x1", id="x1", value="0"></td>
+						</tr>
+						<tr>
+							<td><label for="y1"> y1 :</label>
+							<td><input type="number", name="y1", id="y1", value="0"></td>
+						</tr>
+						<tr>
+							<td><label for="x2"> x2 :</label>
+							<td><input type="number", name="x2", id="x2", value="0"></td>
+						</tr>
+						<tr>
+							<td><label for="y2"> y2 :</label>
+							<td><input type="number", name="y2", id="y2", value="0"></td>
+						</tr>
+						<tr>
+							<td colspan="2"><input type="submit", value="area commit"></td>
+						</tr>
+					</table>
+					</form>
+				</span>
+				</div>
+				<div id="mode_change_btn_div">
+					<button id="mode_change_btn">area selection</button>
+				</div>
+				<div id="camera_setting_div">
+					<button id="camera_setting_btn">camera setting</button>
+				</div>
+			</div>
+			<div id="rightBottom_div" class="division">
+				<button id="table_check_btn">table check</button>		
+				<button id="coordinates_table_clear_btn">table clear</button><br>
 
-			<table border="1" style="text-align: center;"id="target_table">
-			<thead id="target_table_head">
-			<tr> <th>id</th> <th>distance</th> <th>checkbox</th> </tr>
-			</thead>
-			<tbody id="target_table_body"></tbody>
-			</table>
-
+				<table border="1" style="text-align: center;"id="target_table">
+				<thead id="target_table_head">
+				<tr><th>id</th><th>distance</th></tr>
+				</thead>
+				<tbody id="target_table_body"></tbody>
+				</table>
+			</div>
 		</div>
 		<input id="resolution_width" value="{{userdata_list.user_width}}"/>
 		<input id="resolution_height" value="{{userdata_list.user_height}}"/>
