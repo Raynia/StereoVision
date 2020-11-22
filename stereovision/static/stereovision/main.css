@@ -45,6 +45,7 @@ body {
     position : absolute;
     top : 0px;
     left : 0px;
+    border : 1px solid black;
 }
         /*왼쪽*/
         #midLeft_div{
@@ -143,7 +144,7 @@ body {
             #mode_change_btn_div{
                 position : absolute;
                 left : 2px;
-                top : 165px;
+                top : 155px;
                 text-align : center;
             }
             #camera_setting_div{
