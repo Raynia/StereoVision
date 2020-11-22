@@ -189,6 +189,8 @@
 					coordinates_table_mirror=[];
 					canvas_clear("midLeft_canvas");
 					canvas_clear("midRight_canvas");
+					canvas_clear("midLeft_canvas_preview");
+					canvas_clear("midRight_canvas_preview");
 
 					$.ajax({
             			url: "{% url 'stereovision:target_table_all_clear' %}",
