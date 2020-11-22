@@ -1,3 +1,9 @@
+body {
+    margin: 0px;
+    width: 100vw;
+    height: 100vh;
+}
+
 img.preview_cam {
     width: 640px;
     height: 480px;
