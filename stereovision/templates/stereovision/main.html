@@ -233,20 +233,20 @@
 										coordinates_table[key][1] = Math.floor(result[key].left_x1*view_width/resolution_w);
 										coordinates_table[key][2] = Math.floor(result[key].left_y1*view_height/resolution_h);
 										coordinates_table[key][3] = Math.floor(result[key].left_x2*view_width/resolution_w);
-										coordinates_table[key][4] = Math.floor(result[key].left_y2*view_heigh/resolution_h);
+										coordinates_table[key][4] = Math.floor(result[key].left_y2*view_height/resolution_h);
 										coordinates_table_mirror[key][1] = Math.floor(result[key].right_x1*view_width/resolution_w);						
-										coordinates_table_mirror[key][2] = Math.floor(result[key].right_y1*view_heigh/resolution_h);						
+										coordinates_table_mirror[key][2] = Math.floor(result[key].right_y1*view_height/resolution_h);						
 										coordinates_table_mirror[key][3] = Math.floor(result[key].right_x2*view_width/resolution_w);						
-										coordinates_table_mirror[key][4] = Math.floor(result[key].right_y2*view_heigh/resolution_h);
+										coordinates_table_mirror[key][4] = Math.floor(result[key].right_y2*view_height/resolution_h);
 									}else{
 										coordinates_table[key][1] = Math.floor(result[key].right_x1*view_width/resolution_w);								
-										coordinates_table[key][2] = Math.floor(result[key].right_y1*view_heigh/resolution_h);								
+										coordinates_table[key][2] = Math.floor(result[key].right_y1*view_height/resolution_h);								
 										coordinates_table[key][3] = Math.floor(result[key].right_x2*view_width/resolution_w);								
-										coordinates_table[key][4] = Math.floor(result[key].right_y2*view_heigh/resolution_h);
+										coordinates_table[key][4] = Math.floor(result[key].right_y2*view_height/resolution_h);
 										coordinates_table_mirror[key][1] = Math.floor(result[key].left_x1*view_width/resolution_w);						
-										coordinates_table_mirror[key][2] = Math.floor(result[key].left_y1*view_heigh/resolution_h);						
+										coordinates_table_mirror[key][2] = Math.floor(result[key].left_y1*view_height/resolution_h);						
 										coordinates_table_mirror[key][3] = Math.floor(result[key].left_x2*view_width/resolution_w);						
-										coordinates_table_mirror[key][4] = Math.floor(result[key].left_y2*view_heigh/resolution_h);
+										coordinates_table_mirror[key][4] = Math.floor(result[key].left_y2*view_height/resolution_h);
 									}					
 								}
 								draw_all();
@@ -346,9 +346,9 @@
 
 				function setPost(pos, x1, y1, x2, y2){
 					xx1 = Math.floor(x1 * resolution_w / view_width);
-					yy1 = Math.floor(y1 * resolution_h / view_heigh);
+					yy1 = Math.floor(y1 * resolution_h / view_height);
 					xx2 = Math.floor(x2 * resolution_w / view_width);
-					yy2 = Math.floor(y2 * resolution_h / view_heigh);
+					yy2 = Math.floor(y2 * resolution_h / view_height);
 					console.log(xx1,yy1,xx2,yy2)
 					document.getElementById("camera_pos").setAttribute("value", pos);
 					document.getElementById("x1").setAttribute("value", xx1);
