@@ -23,6 +23,9 @@
 			var color_table=["#FE9A2E","#FFFF00","#BFFF00","#01DF01","#00FFFF","#0101DF","#7401DF","#FE2EF7","#848484","#000000"];
 			var color_index=0;
 
+			var coordinates_table = new Array();
+			var coordinates_table_mirror = new Array();
+
 			//Target Table Interval 변수
 			var table_refresh_flag = false;
 			var table_refresh = null;
@@ -44,6 +47,8 @@
 						$("#midLeft_image").css("width","800px").css("height","600px").css("position","absolute").css("left","0px");
 						$("#midLeft_canvas").css("visibility","hidden");
 						$("#midLeft_canvas_temp").css("visibility","hidden");
+						$("#midRight_canvas_preview").css("visibility","visible");
+						$("#midLeft_canvas_preview").css("visibility","visible");
 						console.log(camera_selection);
 					}else if(camera_selection=="none"&&mode=="camera_selection"){
 						camera_selection="left";
@@ -54,6 +59,8 @@
 						$("#midLeft_canvas").css("visibility","visible");
 						$("#midLeft_canvas_temp").css("visibility","visible");
 						$("#midRight_canvas").css("visibility","hidden");
+						$("#midRight_canvas_preview").css("visibility","hidden");
+						$("#midLeft_canvas_preview").css("visibility","hidden");
 						console.log(camera_selection);
 					}
 				});
@@ -66,7 +73,10 @@
 						$("#midRight_div").css("width","800px").css("height","600px").css("position","absolute").css("left","800px").css("visibility","visible");
 						$("#midRight_image").css("width","800px").css("height","600px").css("position","absolute").css("left","0px");
 						$("#midRight_canvas").css("visibility","hidden");
+						$("#midLeft_canvas").css("visibility","hidden");
 						$("#midRight_canvas_temp").css("visibility","hidden");
+						$("#midRight_canvas_preview").css("visibility","visible");
+						$("#midLeft_canvas_preview").css("visibility","visible");
 						console.log(camera_selection);
 					}else if(camera_selection=="none"&&mode=="camera_selection"){
 						camera_selection="right";
@@ -77,6 +87,8 @@
 						$("#midRight_canvas").css("visibility","visible");
 						$("#midRight_canvas_temp").css("visibility","visible");
 						$("#midLeft_canvas").css("visibility","visible");
+						$("#midRight_canvas_preview").css("visibility","hidden");
+						$("#midLeft_canvas_preview").css("visibility","hidden");
 						console.log(camera_selection);
 					}
 				});//카메라 선택 모드 끝
@@ -153,7 +165,7 @@
 					}
 				});//오른쪽카메라 범위지정 끝
 
-				var coordinates_table = new Array();
+				
 
 				//버튼
 				$("#mode_change_btn").on("click",function(){//모드 선택 버튼 시작
@@ -174,6 +186,7 @@
 				});//모드 선택 버튼 끝
 				$("#coordinates_table_clear_btn").on("click",function(){//전체 삭제 버튼
 					coordinates_table=[];
+					coordinates_table_mirror=[];
 					canvas_clear("midLeft_canvas");
 					canvas_clear("midRight_canvas");
 
@@ -194,9 +207,6 @@
  					}
 				});
 				$("#table_check_btn").on("click",function(){//테이블 확인 버튼
-					for(var i=0;i<coordinates_table.length;i++){
-						console.log(coordinates_table[i][0]+" "+coordinates_table[i][1]+" "+coordinates_table[i][2]+" "+coordinates_table[i][3]+" "+coordinates_table[i][4]);
-					}
 					$.ajax({
             			url: "{% url 'stereovision:target_table_check' %}",
 						dataType: "json",
@@ -208,18 +218,31 @@
 								html += "</tr>";
 							}
 							else{
-								var result_index = 0;
-
 								for (key in result){
 									html += "<tr>";
 									html += "<td style='background-color: " + color_table[key] + ";'>"  + " </td>";
 									html += "<td>" + result[key].distance + "</td>";
 									html += "<td>" + "<input type='checkbox' name='target_index' value='" + result[key].id + "'>" + "</td>";
 									html += "</tr>";
-									coordinates_table[key][1] = result[key].left_x1;								
-									coordinates_table[key][2] = result[key].left_y1;								
-									coordinates_table[key][3] = result[key].left_x2;								
-									coordinates_table[key][4] = result[key].left_y2;							
+									if(coordinates_table[key][0]=="midLeft_canvas"){
+										coordinates_table[key][1] = Math.floor(result[key].left_x1*1600.0/resolution_w);
+										coordinates_table[key][2] = Math.floor(result[key].left_y1*1200.0/resolution_w);
+										coordinates_table[key][3] = Math.floor(result[key].left_x2*1600.0/resolution_w);
+										coordinates_table[key][4] = Math.floor(result[key].left_y2*1200.0/resolution_w);
+										coordinates_table_mirror[key][1] = Math.floor(result[key].result[key].right_x1*1600.0/resolution_w;						
+										coordinates_table_mirror[key][2] = Math.floor(result[key].result[key].right_y1*1200.0/resolution_w;						
+										coordinates_table_mirror[key][3] = Math.floor(result[key].result[key].right_x2*1600.0/resolution_w;						
+										coordinates_table_mirror[key][4] = Math.floor(result[key].result[key].right_y2*1200.0/resolution_w;
+									}else{
+										coordinates_table[key][1] = Math.floor(result[key].result[key].right_x1*1600.0/resolution_w;								
+										coordinates_table[key][2] = Math.floor(result[key].result[key].right_y1*1200.0/resolution_w;								
+										coordinates_table[key][3] = Math.floor(result[key].result[key].right_x2*1600.0/resolution_w;								
+										coordinates_table[key][4] = Math.floor(result[key].result[key].right_y2*1200.0/resolution_w;
+										coordinates_table_mirror[key][1] = Math.floor(result[key].result[key].left_x1*1600.0/resolution_w;						
+										coordinates_table_mirror[key][2] = Math.floor(result[key].result[key].left_y1*1200.0/resolution_w;						
+										coordinates_table_mirror[key][3] = Math.floor(result[key].result[key].left_x2*1600.0/resolution_w;						
+										coordinates_table_mirror[key][4] = Math.floor(result[key].result[key].left_y2*1200.0/resolution_w;
+									}					
 								}
 								draw_all();
 							}		
@@ -244,6 +267,11 @@
             				data: d,
 							success:function(result){
 								coordinates_table.push([selected_canvas,cameraX_from_temp,cameraY_from_temp,cameraX_to_temp,cameraY_to_temp,color_table[color_index]]);
+								if(selected_canvas=="midLeft_canvas"){
+									coordinates_table_mirror.push("midRight_canvas",0,0,0,0,color_table[color_index]);
+								}else{
+									coordinates_table_mirror.push("midLeft_canvas",0,0,0,0,color_table[color_index]);
+								}
 								$("#calc_distance").attr("value", result.distance)
 								$("#table_check_btn").click();
 								color_index++;
@@ -291,8 +319,19 @@
 				function draw_all(){
 					canvas_clear("midLeft_canvas");
 					canvas_clear("midRight_canvas");
+					draw_preview();
 					for(var i=0; i<coordinates_table.length; i++){
 						draw(coordinates_table[i][0], coordinates_table[i][1] ,coordinates_table[i][2],coordinates_table[i][3],coordinates_table[i][4],coordinates_table[i][5]);
+						draw(coordinates_table_mirror[i][0], coordinates_table_mirror[i][1] ,coordinates_table_mirror[i][2],coordinates_table_mirror[i][3],coordinates_table_mirror[i][4],coordinates_table_mirror[i][5]);
+					}
+					
+				}
+				function draw_preview(){
+					canvas_clear("midLeft_canvas_preview");
+					canvas_clear("midRight_canvas_preview");
+					for(var i=0; i<coordinates_table.length; i++){
+						draw(coordinates_table[i][0]+"_preview", coordinates_table[i][1]/2,coordinates_table[i][2]/2,coordinates_table[i][3]/2,coordinates_table[i][4]/2,coordinates_table[i][5]);
+						draw(coordinates_table_mirror[i][0], coordinates_table_mirror[i][1]/2 ,coordinates_table_mirror[i][2]/2,coordinates_table_mirror[i][3]/2,coordinates_table_mirror[i][4]/2,coordinates_table_mirror[i][5]);
 					}
 				}
 				function Drag(canvas, X_from, Y_from){
@@ -369,11 +408,13 @@
 				<img id="midLeft_image" src="{% url 'stereovision:video_left' %}">
 				<canvas id="midLeft_canvas" width="1600" height="1200"></canvas>
 				<canvas id="midLeft_canvas_temp" width="1600" height="1200"></canvas>
+				<canvas id="midLeft_canvas_preview" width="800" height="600"></canvas>
 			</div>
 			<div id="midRight_div" class="division">
 				<img id="midRight_image" src="{% url 'stereovision:video_right' %}">	
 				<canvas id="midRight_canvas" width="1600" height="1200"></canvas>
 				<canvas id="midRight_canvas_temp" width="1600" height="1200"></canvas>
+				<canvas id="midRight_canvas_preview" width="800" height="600"></canvas>
 			</div>
 		</div>
 		<div id="right_div" class="division">

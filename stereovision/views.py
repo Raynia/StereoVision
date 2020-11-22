@@ -172,7 +172,7 @@ def userdata_update(request):
     distance = int(request.POST['distance'])
 
     stereoCamera.AddSettingList('Resolution',(width, height))
-    pixelCalculator.SettingCamera((width, height), distance, 80)
+    SpixelCalculator.SettingCamera((width, height), distance, 80)
 
     stereoCamera.pre_flag = False
 
